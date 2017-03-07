@@ -4,13 +4,7 @@
   * @author  Chris Di Betta and Samuel Roux
   ****************************************************************************** 
 */
-#include <stdio.h>
-#include <string.h>
-#include "stm32f4xx.h"                  // Device header
-#include "lis3dsh.h"
-
-#define PI 3.14159265358
-#define conv_to_deg(x) (180.0*x/PI)
+#include "tilt_detect.h"
 
 // Initialize accelerometer
 void init_accelerometer(void) {

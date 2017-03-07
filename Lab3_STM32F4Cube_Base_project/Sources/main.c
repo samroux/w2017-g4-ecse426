@@ -72,19 +72,6 @@ void SystemClock_Config(void){
   HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
 }
 
-void CLKStart(){
-	
-	//Enable System Clock
-	__HAL_RCC_SYSCFG_CLK_ENABLE();
-
-	//Enable GPIOH (A, B, C , H) clock
-	__HAL_RCC_GPIOH_CLK_ENABLE();
-
-	__HAL_RCC_GPIOE_CLK_ENABLE(); 	//Enable GPIOE clock (used for pins & accelerometer)
-//	__HAL_RCC_GPIOA_CLK_ENABLE();		//Enable GPIOA clock (used for button)
-	__HAL_RCC_GPIOD_CLK_ENABLE();		//Enable GPIOD clock (used for LED)
-}
-
 #ifdef USE_FULL_ASSERT
 
 /**

@@ -870,15 +870,15 @@ ARM Macro Assembler    Page 14
               00000000 
 Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp --apcs=int
 erwork --depend=.\objects\startup_stm32f407xx.d -o.\objects\startup_stm32f407xx
-.o -IP:\_ecse426\w2017-g4-ecse426\Lab3_STM32F4Cube_Base_project\RTE -IP:\_ecse4
-26\w2017-g4-ecse426\Lab3_STM32F4Cube_Base_project\RTE\Device\STM32F407VGTx -IC:
-\McGill\Software_Install\EDU\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\Include -IC
-:\McGill\Software_Install\EDU\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.11.0\Driver
-s\CMSIS\Device\ST\STM32F4xx\Include -IC:\McGill\Software_Install\EDU\Keil_v5\AR
-M\PACK\Keil\STM32F4xx_DFP\2.11.0\Drivers\STM32F4xx_HAL_Driver\Inc --predefine="
-__MICROLIB SETA 1" --predefine="__UVISION_VERSION SETA 515" --predefine="_RTE_ 
-SETA 1" --predefine="STM32F407xx SETA 1" --list=.\listings\startup_stm32f407xx.
-lst RTE\Device\STM32F407VGTx\startup_stm32f407xx.s
+.o -I"C:\Users\chris\Documents\ECSE 426\w2017-g4-ecse426\Lab3_STM32F4Cube_Base_
+project\RTE\Device\STM32F407VGTx" -I"C:\Users\chris\Documents\ECSE 426\w2017-g4
+-ecse426\Lab3_STM32F4Cube_Base_project\RTE\_Lab_3" -IC:\Keil_v5\ARM\PACK\ARM\CM
+SIS\5.0.0\CMSIS\Include -IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.11.0\Drivers
+\CMSIS\Device\ST\STM32F4xx\Include -IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.1
+1.0\Drivers\STM32F4xx_HAL_Driver\Inc --predefine="__EVAL SETA 1" --predefine="_
+_MICROLIB SETA 1" --predefine="__UVISION_VERSION SETA 522" --predefine="_RTE_ S
+ETA 1" --predefine="STM32F407xx SETA 1" --list=.\listings\startup_stm32f407xx.l
+st RTE\Device\STM32F407VGTx\startup_stm32f407xx.s
 
 
 
@@ -1963,4 +1963,4 @@ Symbol: __main
       At line 192 in file RTE\Device\STM32F407VGTx\startup_stm32f407xx.s
 Comment: __main used once
 2 symbols
-445 symbols in table
+446 symbols in table
