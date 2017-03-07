@@ -53,6 +53,7 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
+int accel_ready;
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
@@ -164,6 +165,22 @@ void SysTick_Handler(void)
 /*  available peripheral interrupt handler's name please refer to the startup */
 /*  file (startup_stm32f4xx.s).                                               */
 /******************************************************************************/
+
+/**
+  * @brief  This function handles accelerometer interrupt requests
+  * @param  None
+  * @retval None
+  */
+void EXTI0_IRQHandler(void){
+	
+	// Listen to pin 0
+	HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_0);
+	
+	// Flag for interrupt
+	accel_ready = 1;
+
+}
+
 /**
   * @brief  This function handles PPP interrupt request.
   * @param  None

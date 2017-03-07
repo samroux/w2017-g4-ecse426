@@ -12,8 +12,12 @@
 #include "stm32f4xx_hal.h"
 #include "supporting_functions.h"
 #include "lis3dsh.h"
+#include "main.h"
 
 /* Private variables ---------------------------------------------------------*/
+float accelerometer_data[3];	
+TIM_HandleTypeDef tim3_handle;
+
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config	(void);
@@ -39,6 +43,64 @@ uint32_t filterResult(uint32_t* p) {//FIR filter for noise reduction
 	return res;
 }
 
+//Input capture callback
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
+	
+	//Compilation warning
+  __IO uint32_t tmpreg = 0x00;
+  UNUSED(tmpreg); 
+	
+	// If callback is associated with the given pin, then read the data
+	if(GPIO_Pin == GPIO_PIN_0) {
+		LIS3DSH_ReadACC(accelerometer_data);
+	}	
+}	
+
+//Timer callback
+void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim) {
+	//Prevent comilation warning
+  UNUSED(htim);
+	
+}
+
+/* Might not be needed, dont really know what it does tbh
+void init_TIM3(void) {
+	TIM_Base_InitTypeDef initTIM3;
+	
+	// Enable clock for TIM3 
+	__HAL_RCC_TIM3_CLK_ENABLE();
+	
+	// Desired Rate = ClockFrequency / (prescaler * period)
+	// Rate = 1000Hz, frequency = 42MHz																		 TODO: FIX to 500 HZ
+	// need to setup period and prescaler
+	// set rate to 500Hz
+	
+	// Initialize timer 3 initialization struct 
+	initTIM3.Period = 42;			 								// Period is in MHz
+	initTIM3.Prescaler = 2000;
+	initTIM3.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+	initTIM3.CounterMode = TIM_COUNTERMODE_UP;
+	
+	// Initialize timer 3 handle struct
+	tim3_handle.Instance = TIM3;
+	tim3_handle.Init = initTIM3;
+	tim3_handle.Channel = HAL_TIM_ACTIVE_CHANNEL_CLEARED;
+	tim3_handle.Lock = HAL_UNLOCKED;
+	tim3_handle.State = HAL_TIM_STATE_READY;
+
+	// Initialize timer 3 handle and enable interrupts
+	HAL_TIM_Base_MspInit(&tim3_handle);
+	HAL_TIM_Base_Init(&tim3_handle);
+	HAL_TIM_Base_Start_IT(&tim3_handle);
+		
+	// Configure NVIC 
+	HAL_NVIC_EnableIRQ(TIM3_IRQn);
+	HAL_NVIC_SetPriority(TIM3_IRQn, 0,0);
+	//HAL_NVIC_ClearPendingIRQ(TIM3_IRQn);
+	
+}
+*/
+
 int main(void)
 {	
   /* MCU Configuration----------------------------------------------------------*/
@@ -49,8 +111,24 @@ int main(void)
   SystemClock_Config();
 	
   /* Initialize all configured peripherals */
-
+	printf("begin");
+	
+	//init_TIM3();
+	
+	printf("Initialized TIM3\n");
+	
+	init_accelerometer();
+	
+	printf("Initialized accelerometer\n");
+	
+	accel_ready = 0;
+	
 	while (1){
+		if (accel_ready == 1){
+			accel_ready = 0;
+			
+			printf("%f, %f, %f\n", accelerometer_data[0], accelerometer_data[1], accelerometer_data[2]);	
+		}			
 	}
 }
 
