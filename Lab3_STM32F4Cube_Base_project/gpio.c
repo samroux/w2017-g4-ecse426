@@ -94,6 +94,16 @@ void LED_GPIO_Init(){
 }
 
 
+void KP_GPIO_Init(){
+	GPIO_InitDef_KP.Pin 		= GPIO_PIN_4 | GPIO_PIN_5 |GPIO_PIN_6 |GPIO_PIN_7 |GPIO_PIN_8 |GPIO_PIN_9 |GPIO_PIN_10|GPIO_PIN_11;
+	GPIO_InitDef_KP.Mode 	= GPIO_MODE_OUTPUT_PP; // combined the previous Mode(OUT) & OType(PP)
+	GPIO_InitDef_KP.Pull 	= GPIO_PULLUP;
+	GPIO_InitDef_KP.Speed 	= GPIO_SPEED_HIGH; // no more HZ value.
+	HAL_GPIO_Init(GPIOB, &GPIO_InitDef_KP);
+}
+
+
+
 void oneDigitDisplay(int num, uint16_t digit){ // E4-E10(A-G); E11(DP); E12(x100),E13(x10),E14(1), E15 (Degree Unit)
 
 	switch(digit){

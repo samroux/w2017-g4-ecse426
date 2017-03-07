@@ -26,33 +26,79 @@ Project File Date:  03/06/2017
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 4 (build 422)', folder: 'C:\McGill\Software_Install\EDU\Keil_v5\ARM\ARMCC\Bin'
-Build target 'Lab 3'
+Rebuild target 'Lab 3'
 compiling main.c...
-C:\McGill\Software_Install\EDU\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.11.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f407xx.h(70): warning:  #47-D: incompatible redefinition of macro "__FPU_PRESENT"
-  #define __FPU_PRESENT             1U       /*!< FPU present                                   */
-Sources\main.c: 1 warning, 0 errors
+compiling fput_debug.c...
+compiling supporting_functions.c...
+compiling stm32f4xx_it.c...
+compiling tilt_detect.c...
+Sources\tilt_detect.c(62): warning:  #1-D: last line of file ends without a newline
+  */
+Sources\tilt_detect.c: 1 warning, 0 errors
 compiling keypad.c...
-C:\McGill\Software_Install\EDU\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.11.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f407xx.h(70): warning:  #47-D: incompatible redefinition of macro "__FPU_PRESENT"
-  #define __FPU_PRESENT             1U       /*!< FPU present                                   */
-keypad.c: 1 warning, 0 errors
+keypad.c(14): warning:  #1294-D: Old-style function KP_Translation
+  int KP_Translation (reading){
+keypad.c(14): warning:  #1079-D: standard requires that parameter "reading" be given a type by a subsequent declaration ("int" assumed)
+  int KP_Translation (reading){
+keypad.c(70): warning:  #940-D: missing return statement at end of non-void function "KP_Translation"
+  }
+keypad.c(16): warning:  #550-D: variable "key" was set but never used
+        int key;
+keypad.c(71): warning:  #1-D: last line of file ends without a newline
+        
+keypad.c: 5 warnings, 0 errors
+compiling gpio.c...
+compiling LIS3DSH.c...
+Accelerometer\src\LIS3DSH.c(369): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+          *out =(float)(
+IS3DSH_SENSITIVITY_2G * (float)aggregateResult);
+Accelerometer\src\LIS3DSH.c(379): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+          *out =(float)(
+IS3DSH_SENSITIVITY_4G * (float)aggregateResult);
+Accelerometer\src\LIS3DSH.c(389): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+          *out =(float)(
+IS3DSH_SENSITIVITY_6G * (float)aggregateResult);
+Accelerometer\src\LIS3DSH.c(399): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+          *out =(float)(
+IS3DSH_SENSITIVITY_8G * (float)aggregateResult);
+Accelerometer\src\LIS3DSH.c(409): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+          *out =(float)(
+IS3DSH_SENSITIVITY_16G * (float)aggregateResult);
+Accelerometer\src\LIS3DSH.c: 5 warnings, 0 errors
+assembling startup_stm32f407xx.s...
+compiling system_stm32f4xx.c...
+compiling stm32f4xx_hal.c...
+compiling stm32f4xx_hal_adc.c...
+compiling stm32f4xx_hal_adc_ex.c...
+compiling stm32f4xx_hal_cortex.c...
+compiling stm32f4xx_hal_dma.c...
+compiling stm32f4xx_hal_dma_ex.c...
+compiling stm32f4xx_hal_flash.c...
+compiling stm32f4xx_hal_flash_ex.c...
+compiling stm32f4xx_hal_gpio.c...
+compiling stm32f4xx_hal_i2c.c...
+compiling stm32f4xx_hal_i2s.c...
+compiling stm32f4xx_hal_i2s_ex.c...
+compiling stm32f4xx_hal_pwr.c...
+compiling stm32f4xx_hal_pwr_ex.c...
 compiling stm32f4xx_hal_rcc.c...
-C:\McGill\Software_Install\EDU\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.11.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f407xx.h(70): warning:  #47-D: incompatible redefinition of macro "__FPU_PRESENT"
-  #define __FPU_PRESENT             1U       /*!< FPU present                                   */
-C:\McGill\Software_Install\EDU\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.11.0\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_rcc.c(437): error:  #20: identifier "LSE_STARTUP_TIMEOUT" is undefined
-          if((HAL_GetTick() - tickstart ) > 
-CC_LSE_TIMEOUT_VALUE)
-C:\McGill\Software_Install\EDU\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.11.0\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_rcc.c(451): error:  #20: identifier "LSE_STARTUP_TIMEOUT" is undefined
-          if((HAL_GetTick() - tickstart ) > 
-CC_LSE_TIMEOUT_VALUE)
-C:\McGill\Software_Install\EDU\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.11.0\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_rcc.c: 1 warning, 2 errors
 compiling stm32f4xx_hal_rcc_ex.c...
-C:\McGill\Software_Install\EDU\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.11.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f407xx.h(70): warning:  #47-D: incompatible redefinition of macro "__FPU_PRESENT"
-  #define __FPU_PRESENT             1U       /*!< FPU present                                   */
-C:\McGill\Software_Install\EDU\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.11.0\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_rcc_ex.c(2144): error:  #20: identifier "LSE_STARTUP_TIMEOUT" is undefined
-            if((HAL_GetTick() - tickstart ) > 
-CC_LSE_TIMEOUT_VALUE)
-C:\McGill\Software_Install\EDU\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.11.0\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_rcc_ex.c: 1 warning, 1 error
-".\Objects\Base_Project.axf" - 3 Error(s), 4 Warning(s).
+compiling stm32f4xx_hal_rtc.c...
+compiling stm32f4xx_hal_rtc_ex.c...
+compiling stm32f4xx_hal_spi.c...
+compiling stm32f4xx_hal_sram.c...
+compiling stm32f4xx_hal_tim.c...
+compiling stm32f4xx_hal_tim_ex.c...
+compiling stm32f4xx_hal_uart.c...
+compiling stm32f4xx_hal_usart.c...
+compiling stm32f4xx_ll_fsmc.c...
+linking...
+.\Objects\Base_Project.axf: Error: L6218E: Undefined symbol GPIO_InitDef (referred from gpio.o).
+.\Objects\Base_Project.axf: Error: L6218E: Undefined symbol GPIO_InitDef_KP (referred from gpio.o).
+.\Objects\Base_Project.axf: Error: L6218E: Undefined symbol GPIO_InitDef_LED (referred from gpio.o).
+Not enough information to list image symbols.
+Finished: 1 information, 0 warning and 3 error messages.
+".\Objects\Base_Project.axf" - 3 Error(s), 11 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -64,119 +110,119 @@ Package Vendor: ARM
    * Component: CORE Version: 5.0.0
 
 Package Vendor: Keil
-                http://www.keil.com/pack/Keil.STM32F4xx_DFP.2.11.0.pack
-                Keil::Device:Startup:2.6.0
+                http://www.keil.com/pack/Keil.STM32F4xx_DFP.2.8.0.pack
+                Keil::Device:STM32Cube Framework:Classic:1.4.2
                 STMicroelectronics STM32F4 Series Device Support, Drivers and Examples
-   * Component: Startup Version: 2.6.0
-   * Component: Common Version: 1.6.0
-   * Component: ADC Version: 1.6.0
-   * Component: Classic Version: 1.6.0
+   * Component: Classic Version: 1.4.2
+   * Component: ADC Version: 1.4.2
+   * Component: Cortex Version: 1.4.2
+   * Component: DMA Version: 1.4.2
    * Component: STM32Cube Framework Version: 1.0.0
-   * Component: Flash Version: 1.6.0
-   * Component: Cortex Version: 1.6.0
-   * Component: I2C Version: 1.6.0
-   * Component: I2S Version: 1.6.0
-   * Component: PWR Version: 1.6.0
-   * Component: RCC Version: 1.6.0
-   * Component: RTC Version: 1.6.0
-   * Component: DMA Version: 1.6.0
-   * Component: GPIO Version: 1.6.0
-   * Component: UART Version: 1.6.0
-   * Component: USART Version: 1.6.0
-   * Component: TIM Version: 1.6.0
-   * Component: SRAM Version: 1.6.0
-   * Component: SPI Version: 1.6.0
+   * Component: Common Version: 1.4.2
+   * Component: Startup Version: 2.4.2
+   * Component: GPIO Version: 1.4.2
+   * Component: I2C Version: 1.4.2
+   * Component: I2S Version: 1.4.2
+   * Component: Flash Version: 1.4.2
+   * Component: RTC Version: 1.4.2
+   * Component: USART Version: 1.4.2
+   * Component: TIM Version: 1.4.2
+   * Component: PWR Version: 1.4.2
+   * Component: UART Version: 1.4.2
+   * Component: RCC Version: 1.4.2
+   * Component: SPI Version: 1.4.2
+   * Component: SRAM Version: 1.4.2
 
 <h2>Collection of Component include folders:</h2>
   P:\_ecse426\w2017-g4-ecse426\Lab3_STM32F4Cube_Base_project\RTE
   P:\_ecse426\w2017-g4-ecse426\Lab3_STM32F4Cube_Base_project\RTE\Device\STM32F407VGTx
   C:\McGill\Software_Install\EDU\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.0\CMSIS\Include
-  C:\McGill\Software_Install\EDU\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.11.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include
-  C:\McGill\Software_Install\EDU\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.11.0\Drivers\STM32F4xx_HAL_Driver\Inc
+  C:\McGill\Software_Install\EDU\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.8.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include
+  C:\McGill\Software_Install\EDU\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.8.0\Drivers\STM32F4xx_HAL_Driver\Inc
 
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:DSP:1.4.6
-      Include file:  CMSIS\Include\arm_math.h
       Library file:  CMSIS\Lib\ARM\arm_cortexM4lf_math.lib
+      Include file:  CMSIS\Include\arm_math.h
 
    * Component: ARM::CMSIS:CORE:5.0.0
 
-   * Component: Keil::Device:Startup:2.6.0
-      Source file:   Drivers\CMSIS\Device\ST\STM32F4xx\Source\Templates\arm\startup_stm32f407xx.s
-      Source file:   MDK\Device\Source\ARM\STM32F4xx_OTP.s
-      Include file:  Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h
-      Source file:   MDK\Device\Source\ARM\STM32F40xxx_41xxx_OPT.s
-      Source file:   Drivers\CMSIS\Device\ST\STM32F4xx\Source\Templates\system_stm32f4xx.c
+   * Component: Keil::Device:STM32Cube Framework:Classic:1.4.2
+      Source file:   MDK\Templates\Src\stm32f4xx_it.c
+      Include file:  MDK\Templates\Inc\stm32f4xx_hal_conf.h
+      Include file:  MDK\Templates\Inc\stm32f4xx_it.h
+      Include file:  CMSIS\Driver\Config\RTE_Device.h
+      Source file:   MDK\Templates\Src\stm32f4xx_hal_msp.c
+      Source file:   MDK\Templates\Src\main.c
+      Include file:  MDK\Templates\Inc\main.h
 
-   * Component: Keil::Device:STM32Cube HAL:Common:1.6.0
-      Include file:  Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal.h
-      Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal.c
-
-   * Component: Keil::Device:STM32Cube HAL:ADC:1.6.0
+   * Component: Keil::Device:STM32Cube HAL:ADC:1.4.2
       Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_adc.c
       Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_adc_ex.c
 
-   * Component: Keil::Device:STM32Cube Framework:Classic:1.6.0
-      Source file:   MDK\Templates\Src\stm32f4xx_hal_msp.c
-      Include file:  MDK\Templates\Inc\stm32f4xx_it.h
-      Source file:   MDK\Templates\Src\stm32f4xx_it.c
-      Include file:  CMSIS\Driver\Config\RTE_Device.h
-      Include file:  MDK\Templates\Inc\main.h
-      Source file:   MDK\Templates\Src\main.c
-      Include file:  MDK\Templates\Inc\stm32f4xx_hal_conf.h
-
-   * Component: ::Device:STM32Cube Framework:1.0.0 (API)
-
-   * Component: Keil::Device:STM32Cube HAL:Flash:1.6.0
-      Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_flash_ex.c
-      Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_flash.c
-
-   * Component: Keil::Device:STM32Cube HAL:Cortex:1.6.0
+   * Component: Keil::Device:STM32Cube HAL:Cortex:1.4.2
       Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_cortex.c
 
-   * Component: Keil::Device:STM32Cube HAL:I2C:1.6.0
-      Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_i2c.c
-
-   * Component: Keil::Device:STM32Cube HAL:I2S:1.6.0
-      Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_i2s.c
-      Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_i2s_ex.c
-
-   * Component: Keil::Device:STM32Cube HAL:PWR:1.6.0
-      Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_pwr_ex.c
-      Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_pwr.c
-
-   * Component: Keil::Device:STM32Cube HAL:RCC:1.6.0
-      Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_rcc.c
-      Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_rcc_ex.c
-
-   * Component: Keil::Device:STM32Cube HAL:RTC:1.6.0
-      Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_rtc.c
-      Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_rtc_ex.c
-
-   * Component: Keil::Device:STM32Cube HAL:DMA:1.6.0
+   * Component: Keil::Device:STM32Cube HAL:DMA:1.4.2
       Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_dma.c
       Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_dma_ex.c
 
-   * Component: Keil::Device:STM32Cube HAL:GPIO:1.6.0
+   * Component: ::Device:STM32Cube Framework:1.0.0 (API)
+
+   * Component: Keil::Device:STM32Cube HAL:Common:1.4.2
+      Include file:  Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal.h
+      Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal.c
+
+   * Component: Keil::Device:Startup:2.4.2
+      Include file:  Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h
+      Source file:   MDK\Device\Source\ARM\STM32F4xx_OTP.s
+      Source file:   Drivers\CMSIS\Device\ST\STM32F4xx\Source\Templates\arm\startup_stm32f407xx.s
+      Source file:   MDK\Device\Source\ARM\STM32F40xxx_41xxx_OPT.s
+      Source file:   Drivers\CMSIS\Device\ST\STM32F4xx\Source\Templates\system_stm32f4xx.c
+
+   * Component: Keil::Device:STM32Cube HAL:GPIO:1.4.2
       Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_gpio.c
 
-   * Component: Keil::Device:STM32Cube HAL:UART:1.6.0
-      Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_uart.c
+   * Component: Keil::Device:STM32Cube HAL:I2C:1.4.2
+      Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_i2c.c
 
-   * Component: Keil::Device:STM32Cube HAL:USART:1.6.0
+   * Component: Keil::Device:STM32Cube HAL:I2S:1.4.2
+      Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_i2s_ex.c
+      Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_i2s.c
+
+   * Component: Keil::Device:STM32Cube HAL:Flash:1.4.2
+      Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_flash_ex.c
+      Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_flash.c
+
+   * Component: Keil::Device:STM32Cube HAL:RTC:1.4.2
+      Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_rtc.c
+      Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_rtc_ex.c
+
+   * Component: Keil::Device:STM32Cube HAL:USART:1.4.2
       Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_usart.c
 
-   * Component: Keil::Device:STM32Cube HAL:TIM:1.6.0
+   * Component: Keil::Device:STM32Cube HAL:TIM:1.4.2
       Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_tim.c
       Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_tim_ex.c
 
-   * Component: Keil::Device:STM32Cube HAL:SRAM:1.6.0
+   * Component: Keil::Device:STM32Cube HAL:PWR:1.4.2
+      Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_pwr.c
+      Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_pwr_ex.c
+
+   * Component: Keil::Device:STM32Cube HAL:UART:1.4.2
+      Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_uart.c
+
+   * Component: Keil::Device:STM32Cube HAL:RCC:1.4.2
+      Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_rcc.c
+      Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_rcc_ex.c
+
+   * Component: Keil::Device:STM32Cube HAL:SPI:1.4.2
+      Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_spi.c
+
+   * Component: Keil::Device:STM32Cube HAL:SRAM:1.4.2
       Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_sram.c
       Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_ll_fsmc.c
-
-   * Component: Keil::Device:STM32Cube HAL:SPI:1.6.0
-      Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_spi.c
 Target not created.
 </pre>
 </body>

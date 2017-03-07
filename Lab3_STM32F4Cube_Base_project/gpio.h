@@ -61,6 +61,7 @@
 	 //initialization of GPIO
 extern GPIO_InitTypeDef GPIO_InitDef;
 extern GPIO_InitTypeDef GPIO_InitDef_LED;
+extern GPIO_InitTypeDef GPIO_InitDef_KP;
 	 
 
 /* USER CODE END Private defines */
