@@ -6,6 +6,8 @@
 */
 #include "tilt_detect.h"
 
+accelerometer_axes axes;
+
 // Initialize accelerometer
 void init_accelerometer(void) {
 	
@@ -48,9 +50,15 @@ void init_accelerometer(void) {
 
 }
 
-/*
-float calc_pitch_angle(void){
-	return 90.0 - conv_to_deg(atan(accel.y/sqrt((accel.x*accel.x)+(accel.z*accel.z))));
+void update_accel(float Ax, float Ay, float Az){
+	
+}
+
+float calc_pitch(void){
+	return 90.0 - conv_to_deg(atan(axes.y/sqrt((axes.x*axes.x)+(axes.z*axes.z))));
 
 }
-*/
+
+float calc_roll(void){
+	return 90.0 - conv_to_deg(atan(axes.x/sqrt((axes.y*axes.y)+(axes.z*axes.z))));
+}

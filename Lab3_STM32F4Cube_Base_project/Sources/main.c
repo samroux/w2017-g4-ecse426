@@ -18,6 +18,27 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config	(void);
 
+typedef struct {
+	float b[5];
+}FIR_coeff;
+
+FIR_coeff coeff = {//FIR Filter coefficients
+	.b[0] = 0.1,
+	.b[1] = 0.15,
+	.b[2] = 0.5,
+	.b[3] = 0.15,
+	.b[4] = 0.1
+};
+
+uint32_t filterResult(uint32_t* p) {//FIR filter for noise reduction 
+	uint32_t res = 0;
+	
+	for(int i = 4; i >= 0; i--) {
+		res += *(p+i)*(coeff.b[4-i]);
+	}
+	return res;
+}
+
 int main(void)
 {	
   /* MCU Configuration----------------------------------------------------------*/
