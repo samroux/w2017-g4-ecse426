@@ -13,6 +13,7 @@
 #include "supporting_functions.h"
 #include "lis3dsh.h"
 #include "main.h"
+#include "tilt_detect.h"
 
 /* Private variables ---------------------------------------------------------*/
 float accelerometer_data[3];	
@@ -128,6 +129,15 @@ int main(void)
 			accel_ready = 0;
 			
 			printf("%f, %f, %f\n", accelerometer_data[0], accelerometer_data[1], accelerometer_data[2]);	
+			
+			update_accel(accelerometer_data[0], accelerometer_data[1], accelerometer_data[2]);
+			
+			printf("%f, %f, %f\n", accelerometer_data[0], accelerometer_data[1], accelerometer_data[2]);	
+			
+			float roll = calc_roll();
+			float pitch = calc_pitch();
+			
+			printf("Roll: %f, pitch: %f\n", roll, pitch); 
 		}			
 	}
 }

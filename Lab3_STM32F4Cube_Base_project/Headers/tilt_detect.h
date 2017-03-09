@@ -16,18 +16,18 @@ typedef struct {
 } accelerometer_axes;
 
 #define PI 3.14159265358
-#define ACC11 0.9523
-#define ACC12 -0.0019
-#define ACC13 -0.0079
-#define ACC10 -0.0297
-#define ACC21 -0.0397
-#define ACC22 0.9896
-#define ACC23 -0.0105
-#define ACC20 0.0070
-#define ACC31 -0.0047
-#define ACC32 -0.0024
-#define ACC33 1.0087
-#define ACC30 -0.0328 
+#define ACC11 4.3252
+#define ACC12 0.5604
+#define ACC13 0.1812
+#define ACC10 0.000333
+#define ACC21 -0.03287
+#define ACC22 4.4725
+#define ACC23 0.23041
+#define ACC20 0.000006
+#define ACC31 0.06875
+#define ACC32 0.2117
+#define ACC33 4.1983
+#define ACC30 0.0005 
 #define conv_to_deg(x) (180.0*x/PI)
 
 //Updates accelerometer values
