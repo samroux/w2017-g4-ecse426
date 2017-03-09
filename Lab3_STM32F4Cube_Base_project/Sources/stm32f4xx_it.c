@@ -38,8 +38,9 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include "main.h"
 #include "stm32f4xx_it.h"
+#include "lis3dsh.h"
+#include "main.h"
 
 /** @addtogroup STM32F4xx_HAL_Examples
   * @{
@@ -53,7 +54,11 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
+uint8_t tim4_flag;
+uint16_t tim4_ticks;
 int accel_ready;
+uint32_t TimingDelay;
+TIM_HandleTypeDef handle_tim4;
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
@@ -179,6 +184,19 @@ void EXTI0_IRQHandler(void){
 	// Flag for interrupt
 	accel_ready = 1;
 
+}
+
+
+void TIM4_IRQHandler(void) {
+	
+	HAL_TIM_IRQHandler(&handle_tim4);
+
+	tim4_flag = 1;
+
+	if(TimingDelay !=0) {
+			TimingDelay --;
+	}
+	
 }
 
 /**

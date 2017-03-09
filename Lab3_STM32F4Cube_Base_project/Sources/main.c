@@ -16,8 +16,10 @@
 #include "tilt_detect.h"
 
 /* Private variables ---------------------------------------------------------*/
-float accelerometer_data[3];	
-TIM_HandleTypeDef tim3_handle;
+float accelerometer_data[3];
+float rolls[5];
+float pitches[5];
+TIM_HandleTypeDef tim4_handle;
 
 
 /* Private function prototypes -----------------------------------------------*/
@@ -35,8 +37,8 @@ FIR_coeff coeff = {//FIR Filter coefficients
 	.b[4] = 0.1
 };
 
-uint32_t filterResult(uint32_t* p) {//FIR filter for noise reduction 
-	uint32_t res = 0;
+float filterResult(float* p) {//FIR filter for noise reduction 
+	float res = 0;
 	
 	for(int i = 4; i >= 0; i--) {
 		res += *(p+i)*(coeff.b[4-i]);
@@ -47,7 +49,7 @@ uint32_t filterResult(uint32_t* p) {//FIR filter for noise reduction
 //Input capture callback
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 	
-	//Compilation warning
+	//Prevent Compilation warning
   __IO uint32_t tmpreg = 0x00;
   UNUSED(tmpreg); 
 	
@@ -57,50 +59,55 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 	}	
 }	
 
+//Can be used to cause a software delay
+void delay(uint32_t time)
+{
+  TimingDelay = time;
+  while(TimingDelay !=0);
+}
+
 //Timer callback
 void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim) {
-	//Prevent comilation warning
+	//Prevent compilation warning
   UNUSED(htim);
 	
 }
 
-/* Might not be needed, dont really know what it does tbh
-void init_TIM3(void) {
-	TIM_Base_InitTypeDef initTIM3;
+
+void init_TIM4(void) {
+	TIM_Base_InitTypeDef initTIM4;
 	
-	// Enable clock for TIM3 
-	__HAL_RCC_TIM3_CLK_ENABLE();
+	// Enable clock for TIM4 
+	__HAL_RCC_TIM4_CLK_ENABLE();
 	
 	// Desired Rate = ClockFrequency / (prescaler * period)
-	// Rate = 1000Hz, frequency = 42MHz																		 TODO: FIX to 500 HZ
-	// need to setup period and prescaler
-	// set rate to 500Hz
+	// Rate = 2000Hz, frequency = 42MHz, precaler = 1000																	 
 	
-	// Initialize timer 3 initialization struct 
-	initTIM3.Period = 42;			 								// Period is in MHz
-	initTIM3.Prescaler = 2000;
-	initTIM3.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-	initTIM3.CounterMode = TIM_COUNTERMODE_UP;
+	// Initialize timer 4 initialization struct 
+	initTIM4.Period = 42;			 								// Period is in MHz
+	initTIM4.Prescaler = 1000;
+	//initTIM4.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+	initTIM4.CounterMode = TIM_COUNTERMODE_UP;
 	
-	// Initialize timer 3 handle struct
-	tim3_handle.Instance = TIM3;
-	tim3_handle.Init = initTIM3;
-	tim3_handle.Channel = HAL_TIM_ACTIVE_CHANNEL_CLEARED;
-	tim3_handle.Lock = HAL_UNLOCKED;
-	tim3_handle.State = HAL_TIM_STATE_READY;
+	// Initialize timer 4 handle struct
+	tim4_handle.Instance = TIM4;
+	tim4_handle.Init = initTIM4;
+	tim4_handle.Channel = HAL_TIM_ACTIVE_CHANNEL_CLEARED;
+	tim4_handle.Lock = HAL_UNLOCKED;
+	tim4_handle.State = HAL_TIM_STATE_READY;
 
-	// Initialize timer 3 handle and enable interrupts
-	HAL_TIM_Base_MspInit(&tim3_handle);
-	HAL_TIM_Base_Init(&tim3_handle);
-	HAL_TIM_Base_Start_IT(&tim3_handle);
+	// Initialize timer 4 handle and enable interrupts
+	HAL_TIM_Base_MspInit(&tim4_handle);
+	HAL_TIM_Base_Init(&tim4_handle);
+	HAL_TIM_Base_Start_IT(&tim4_handle);
 		
 	// Configure NVIC 
-	HAL_NVIC_EnableIRQ(TIM3_IRQn);
-	HAL_NVIC_SetPriority(TIM3_IRQn, 0,0);
-	//HAL_NVIC_ClearPendingIRQ(TIM3_IRQn);
+	HAL_NVIC_SetPriority(TIM4_IRQn, 0,1);
+	HAL_NVIC_EnableIRQ(TIM4_IRQn);
+	
+	//HAL_NVIC_ClearPendingIRQ(TIM4_IRQn);
 	
 }
-*/
 
 int main(void)
 {	
@@ -112,11 +119,11 @@ int main(void)
   SystemClock_Config();
 	
   /* Initialize all configured peripherals */
-	printf("begin");
+	printf("begin\n");
 	
-	//init_TIM3();
+	//init_TIM4();
 	
-	printf("Initialized TIM3\n");
+	printf("Initialized tim4\n");
 	
 	init_accelerometer();
 	
@@ -128,17 +135,24 @@ int main(void)
 		if (accel_ready == 1){
 			accel_ready = 0;
 			
-			printf("%f, %f, %f\n", accelerometer_data[0], accelerometer_data[1], accelerometer_data[2]);	
+			//printf("%f, %f, %f\n", accelerometer_data[0], accelerometer_data[1], accelerometer_data[2]);	
 			
 			update_accel(accelerometer_data[0], accelerometer_data[1], accelerometer_data[2]);
 			
 			//Uncomment to see uncalibrated version
 			//update_accel2(accelerometer_data[0], accelerometer_data[1], accelerometer_data[2]);
 			
-			float roll = calc_roll();
-			float pitch = calc_pitch();
+			rolls[0] = calc_roll();
+			pitches[0] = calc_pitch();
 			
-			printf("Roll: %f, pitch: %f\n", roll, pitch); 
+			float roll = filterResult(&rolls[0]);
+			float pitch = filterResult(&pitches[0]);
+			
+			for(int i = 3; i > -1; i--){
+				rolls[i+1] = rolls[i];
+				pitches[i+1] = pitches[i];
+			}
+			printf("Roll: %f, pitch: %f, no filt roll: %f, no filt pitch: %f\n", roll, pitch, rolls[0], pitches[0]); 
 		}			
 	}
 }
