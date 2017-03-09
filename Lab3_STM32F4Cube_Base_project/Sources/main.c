@@ -132,7 +132,8 @@ int main(void)
 			
 			update_accel(accelerometer_data[0], accelerometer_data[1], accelerometer_data[2]);
 			
-			printf("%f, %f, %f\n", accelerometer_data[0], accelerometer_data[1], accelerometer_data[2]);	
+			//Uncomment to see uncalibrated version
+			//update_accel2(accelerometer_data[0], accelerometer_data[1], accelerometer_data[2]);
 			
 			float roll = calc_roll();
 			float pitch = calc_pitch();

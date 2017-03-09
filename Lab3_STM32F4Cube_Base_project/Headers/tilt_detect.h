@@ -33,6 +33,8 @@ typedef struct {
 //Updates accelerometer values
 void update_accel(float Ax, float Ay, float Az);
 
+void update_accel2(float Ax, float Ay, float Az);
+
 //Returns pitch angle
 float calc_pitch(void);
 

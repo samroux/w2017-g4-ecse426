@@ -54,6 +54,14 @@ void update_accel(float Ax, float Ay, float Az){
 	axes.x = Ax*ACC11 + Ay*ACC12 + Az*ACC13 + ACC10;
 	axes.y = Ax*ACC21 + Ay*ACC22 + Az*ACC23 + ACC20;
 	axes.z = Ax*ACC31 + Ay*ACC32 + Az*ACC33 + ACC30;
+	printf("%f, %f, %f\n", axes.x, axes.y, axes.z);
+}
+
+void update_accel2(float Ax, float Ay, float Az){
+	axes.x = Ax;
+	axes.y = Ay;
+	axes.z = Az;
+	printf("%f, %f, %f\n", axes.x, axes.y, axes.z);
 }
 
 float calc_pitch(void){
