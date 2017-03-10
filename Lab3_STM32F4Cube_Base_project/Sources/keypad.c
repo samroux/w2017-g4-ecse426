@@ -229,9 +229,6 @@ int check_column(){
 */
 int check_row(){
 	
-	
-	
-	
 		//Rows
 		GPIO_InitDef_KP.Pin 		= GPIO_PIN_11 | GPIO_PIN_12 | GPIO_PIN_13 |GPIO_PIN_14;
 		GPIO_InitDef_KP.Mode 	= GPIO_MODE_INPUT; // Input Floating
