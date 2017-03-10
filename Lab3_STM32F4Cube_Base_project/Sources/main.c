@@ -19,6 +19,8 @@
 float accelerometer_data[3];
 float rolls[5];
 float pitches[5];
+float desiredPitch = 0;
+float desiredRoll = 0;
 TIM_HandleTypeDef tim4_handle;
 
 
@@ -73,7 +75,7 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim) {
 	
 }
 
-
+/*
 void init_TIM4(void) {
 	TIM_Base_InitTypeDef initTIM4;
 	
@@ -108,6 +110,50 @@ void init_TIM4(void) {
 	//HAL_NVIC_ClearPendingIRQ(TIM4_IRQn);
 	
 }
+*/
+
+void Timer_Init(void){
+	
+	TIM_ClockConfigTypeDef sClockSourceConfig;
+  TIM_MasterConfigTypeDef sMasterConfig;
+  TIM_OC_InitTypeDef Timer_init;
+	
+	__TIM4_CLK_ENABLE();
+	
+	tim4_handle.Instance = TIM4;
+	
+	tim4_handle.Init.Period = 360;
+	tim4_handle.Init.Prescaler = 117;
+	tim4_handle.Init.RepetitionCounter = 0;
+	tim4_handle.Init.ClockDivision = 0;
+	tim4_handle.Channel = TIM_CHANNEL_ALL;
+	tim4_handle.Init.CounterMode = TIM_COUNTERMODE_UP;
+	
+	HAL_TIM_Base_Init(&tim4_handle);
+	Timer_init.OCMode = TIM_OCMODE_PWM1;
+	Timer_init.OCPolarity = TIM_OCPOLARITY_HIGH;
+	Timer_init.OCIdleState = TIM_OCIDLESTATE_RESET;
+	Timer_init.Pulse = 360;
+	
+//	sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+//	
+//	HAL_TIM_ConfigClockSource(&tim4_handle, &sClockSourceConfig);
+
+//	HAL_TIM_PWM_Init(&tim4_handle);
+//	
+//	
+//	HAL_NVIC_EnableIRQ(TIM4_IRQn);
+//	HAL_NVIC_SetPriority(TIM4_IRQn, 0, 0);
+}
+
+void PWM_Init(void){
+	HAL_TIM_PWM_Init(&tim4_handle);
+	
+	HAL_TIM_PWM_Start(&tim4_handle, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Start(&tim4_handle, TIM_CHANNEL_2);
+	HAL_TIM_PWM_Start(&tim4_handle, TIM_CHANNEL_3);
+	HAL_TIM_PWM_Start(&tim4_handle, TIM_CHANNEL_4);
+}
 
 int main(void)
 {	
@@ -121,15 +167,46 @@ int main(void)
   /* Initialize all configured peripherals */
 	printf("begin\n");
 	
+	Timer_Init();
+	//PWM_Init();
 	//init_TIM4();
 	
 	printf("Initialized tim4\n");
+	
 	
 	init_accelerometer();
 	
 	printf("Initialized accelerometer\n");
 	
 	accel_ready = 0;
+	
+	// LED stuff
+	GPIO_InitTypeDef GPIO_InitStructure;
+	
+	GPIO_InitTypeDef GPIO_InitDef;
+  GPIO_InitTypeDef GPIO_InitDef_LED;
+	
+	__HAL_RCC_GPIOD_CLK_ENABLE();
+	
+	GPIO_InitDef_LED.Pin 		= GPIO_PIN_12| GPIO_PIN_13|GPIO_PIN_14 | GPIO_PIN_15;
+	GPIO_InitDef_LED.Mode 	= GPIO_MODE_AF_PP;
+	GPIO_InitDef_LED.Pull 	= GPIO_PULLDOWN;
+	GPIO_InitDef_LED.Speed 	= GPIO_SPEED_FREQ_MEDIUM; 
+  HAL_GPIO_Init(GPIOD, &GPIO_InitStructure);
+	
+	GPIO_InitDef_LED.Pin 		= GPIO_PIN_13;
+	HAL_GPIO_Init(GPIOD, &GPIO_InitStructure);
+	
+	GPIO_InitDef_LED.Pin 		= GPIO_PIN_14;
+	HAL_GPIO_Init(GPIOD, &GPIO_InitStructure);
+	
+	GPIO_InitDef_LED.Pin 		= GPIO_PIN_15;
+	HAL_GPIO_Init(GPIOD, &GPIO_InitStructure);
+	
+	
+	
+	
+	
 	
 	while (1){
 		if (accel_ready == 1){
@@ -156,6 +233,58 @@ int main(void)
 		}			
 	}
 }
+
+/*
+void controlRollLED(float desiredRoll, float currentRoll){
+	float rollDifference = fabs(desiredRoll - currentRoll);
+	
+	if (rollDifference < 5){
+	__HAL_TIM_SetCompare(&tim4_handle, TIM_CHANNEL_1, 0);
+	__HAL_TIM_SetCompare(&tim4_handle, TIM_CHANNEL_3, 0);
+	
+	}
+	else {
+	__HAL_TIM_SetCompare(&tim4_handle, TIM_CHANNEL_1, rollDifference);
+	__HAL_TIM_SetCompare(&tim4_handle, TIM_CHANNEL_3, rollDifference);
+	}
+
+}
+
+void controlPitchLED(float desiredPitch, float currentPitch){
+	float pitchDifference = fabs(desiredRoll - desiredPitch);
+	
+	 if(pitchDifference < 5){
+	__HAL_TIM_SetCompare(&tim4_handle, TIM_CHANNEL_2, 0);
+	__HAL_TIM_SetCompare(&tim4_handle, TIM_CHANNEL_4, 0);
+	}
+	else {
+	__HAL_TIM_SetCompare(&tim4_handle, TIM_CHANNEL_2, pitchDifference);
+	__HAL_TIM_SetCompare(&tim4_handle, TIM_CHANNEL_4, pitchDifference);
+	
+	}
+}
+*/
+
+//Exception Handling for timer
+/*
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *Timer){
+
+	if (Timer->Instance == TIM4){
+		int input = KeyPadGetValue();
+		
+    keyPadInput(input);		
+
+		if(rollValue > 0) {
+			controlRollLED();
+		}
+		 if (pitchValue > 0 ){
+			controlPitchLED();
+		}
+		
+	}
+	  
+}
+*/
 
 /** System Clock Configuration*/
 void SystemClock_Config(void){
