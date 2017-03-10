@@ -11,154 +11,262 @@
 #include "lis3dsh.h"
 #include "keypad.h"
 
+#define NO_KEY_PRESSED -1
+#define DELETE 10
+#define ENTER 11
+#define STANDBY 100
+
 GPIO_InitTypeDef GPIO_InitDef_KP;
 
+int check_column (void);
+int check_row (void);
+int KP_Translation(int column, int row);
 
-void KP_GPIO_Init(){
+/**
+	* @brief function interpretting and catching keypad input
+	*	@retval int angle requested
+*/
+int keypad_input (){
 	
-	int r0,r1,r2,r3;
-	int c0,c1,c2,c3;
-	int reading = 0;
+	int angle, req_angle, i, temp;
+	int digits, pressed;
 	
-	__HAL_RCC_GPIOE_CLK_ENABLE();
-	
-	//Columns
-	GPIO_InitDef_KP.Pin 		= GPIO_PIN_10 | GPIO_PIN_12 | GPIO_PIN_13 | GPIO_PIN_14;
-	GPIO_InitDef_KP.Mode 	= GPIO_MODE_INPUT;	// Input Floating
-	GPIO_InitDef_KP.Pull 	= GPIO_PULLUP;
-	GPIO_InitDef_KP.Speed 	= GPIO_SPEED_MEDIUM;
-	HAL_GPIO_Init(GPIOE, &GPIO_InitDef_KP);
-	
-	//Rows
-	GPIO_InitDef_KP.Pin 		=  GPIO_PIN_7 | GPIO_PIN_8 | GPIO_PIN_9 |GPIO_PIN_11;
-	GPIO_InitDef_KP.Mode 	= GPIO_MODE_OUTPUT_PP;	// combined the previous Mode(OUT) & OType(PP) (Output Push Pull)
-	GPIO_InitDef_KP.Pull 	= GPIO_PULLUP;
-	GPIO_InitDef_KP.Speed 	= GPIO_SPEED_MEDIUM;
-	HAL_GPIO_Init(GPIOE, &GPIO_InitDef_KP);
-	
-	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_7, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_8, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_9, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_11, GPIO_PIN_RESET);
-	
-	//reading columns initial states
-	c0 = HAL_GPIO_ReadPin(GPIOE,GPIO_PIN_12);
-	c1 = HAL_GPIO_ReadPin(GPIOE,GPIO_PIN_14);
-	c2 = HAL_GPIO_ReadPin(GPIOE,GPIO_PIN_10);
-	c3 = HAL_GPIO_ReadPin(GPIOE,GPIO_PIN_13);
-	
-	printf("c: %d%d%d%d\n",c0,c1,c2,c3);
+	digits = 3; //max number of digits that can be entered to request angle
+	pressed = 0;
+	angle = 0;
+	req_angle = 0;
+	i = 0;
 	
 	
-	if((c0 && c1 && c2 && c3) != 1){ // a key has been pressed
-		//check which key by getting output of rows.
+	while(i<digits){
+		temp = keypad_interpret();
 		
-		//Rows
-		GPIO_InitDef_KP.Pin 		= GPIO_PIN_7 | GPIO_PIN_8 | GPIO_PIN_9 |GPIO_PIN_11;
-		GPIO_InitDef_KP.Mode 	= GPIO_MODE_INPUT; // Input Floating
-		GPIO_InitDef_KP.Pull 	= GPIO_PULLUP;
-		GPIO_InitDef_KP.Speed 	= GPIO_SPEED_MEDIUM;
-		HAL_GPIO_Init(GPIOE, &GPIO_InitDef_KP);
+		if( temp !=STANDBY && temp != ENTER && temp !=DELETE && pressed == 0){
+			//a key is pressed (no longer in standby mode)
+			//printf ("key: %d\n", temp);
+			//printf("Angle (Init): %d\n",angle);
+			
+			pressed = 1;
+			angle += temp;
+			//printf("Angle (Add): %d\n",angle);
+			angle *= 10;	//shift left
+			//printf("Angle (shift): %d\n",angle);
+			i += 1;
+			printf ("Angle (number): %d\n", angle/10);
+		}
 		
-		//Columns
-		GPIO_InitDef_KP.Pin 		= GPIO_PIN_10 | GPIO_PIN_12 | GPIO_PIN_13 | GPIO_PIN_14;
-		GPIO_InitDef_KP.Mode 	= GPIO_MODE_OUTPUT_PP; // combined the previous Mode(OUT) & OType(PP) (Output Push Pull)
-		GPIO_InitDef_KP.Pull 	= GPIO_PULLUP;
-		GPIO_InitDef_KP.Speed 	= GPIO_SPEED_MEDIUM;
-		HAL_GPIO_Init(GPIOE, &GPIO_InitDef_KP);
+		if(temp == DELETE && pressed == 0){
+				pressed = 1;
+				angle /= 100;				//since integer division always give floor, it will remove the last digit
+				angle *= 10;
+				if(i>0){
+					i -= 1;		//since one digit is removed, reduce value of i
+				}else{
+					i = 0;
+				}
+				printf ("Angle(Delete): %d\n", angle/10);
+		}
+		
+		if ((temp == ENTER && pressed == 0) || i == 3){
+			req_angle = angle/10;
+			angle = 0;	//reset angle
+			i = 0;			//reset i
+			//printf ("Requested Angle is: %d\n", req_angle);
+			pressed = 0;
+			break;
+		}
+		
+		if(temp == STANDBY  && pressed == 1){
+			//back to stanby mode (nothing pressed)
+			pressed = 0;
+		}
+		
 
-		
-		r0 = HAL_GPIO_ReadPin(GPIOE,GPIO_PIN_11);
-		r1 = HAL_GPIO_ReadPin(GPIOE,GPIO_PIN_8);
-		r2 = HAL_GPIO_ReadPin(GPIOE,GPIO_PIN_7);
-		r3 = HAL_GPIO_ReadPin(GPIOE,GPIO_PIN_9);
-		
-		printf("pressed_r: %d%d%d%d\n",r0,r1,r2,r3);
-	
-	}else{
-		//Rows
-	GPIO_InitDef_KP.Pin 		= GPIO_PIN_7 | GPIO_PIN_8 | GPIO_PIN_9 |GPIO_PIN_11;
-	GPIO_InitDef_KP.Mode 	= GPIO_MODE_INPUT; // Input Floating
-	GPIO_InitDef_KP.Pull 	= GPIO_PULLUP;
-	GPIO_InitDef_KP.Speed 	= GPIO_SPEED_MEDIUM;
-	HAL_GPIO_Init(GPIOE, &GPIO_InitDef_KP);
-	
-	//Columns
-	GPIO_InitDef_KP.Pin 		= GPIO_PIN_10 | GPIO_PIN_12 | GPIO_PIN_13 | GPIO_PIN_14;
-	GPIO_InitDef_KP.Mode 	= GPIO_MODE_OUTPUT_PP; // combined the previous Mode(OUT) & OType(PP) (Output Push Pull)
-	GPIO_InitDef_KP.Pull 	= GPIO_PULLUP;
-	GPIO_InitDef_KP.Speed 	= GPIO_SPEED_MEDIUM;
-	HAL_GPIO_Init(GPIOE, &GPIO_InitDef_KP);
-
-	
-	r0 = HAL_GPIO_ReadPin(GPIOE,GPIO_PIN_11);
-	r1 = HAL_GPIO_ReadPin(GPIOE,GPIO_PIN_8);
-	r2 = HAL_GPIO_ReadPin(GPIOE,GPIO_PIN_7);
-	r3 = HAL_GPIO_ReadPin(GPIOE,GPIO_PIN_9);
-	
-	printf("not_pressed_r: %d%d%d%d\n",r0,r1,r2,r3);
-		
 	}
-	
+		
+	return req_angle;
 }
 
-int KP_Translation (int reading){
+/**
+	* @brief checking and interpretting key entries
+	* @retval key
+	*/
+int keypad_interpret (){
+	
+	int column = check_column();
+	int row = check_row();
+	
+	//printf("c: %d r: %d\n", column, row);
+	
+	int key = KP_Translation (column, row);
+	
+	//printf ("key: %d\n",key);
+	
+	return key;
+}
+
+/**
+	* @brief function doing mapping between row and column and actual key
+	*	@retval int key_id
+*/
+int KP_Translation (int column, int row){
+	
+
+	
+	int key_code = row*10 + column;
 	
 	int key;
 
-	switch (reading){
+	switch (key_code){
 										//row		//column
 		
 		//--------Row 1---------
-		case 11101110:	//1110		1110
+		case 11:	//1110		1100
 			key = 1;
 		break;
 		
-		case 11101101:	//1110		1101
+		case 12:	//1110		1010
 			key = 2;
 		break;
 		
-		case 11101011:	//1110		1011
+		case 13:	//1110		0110
 			key = 3;
 		break;
 		
 		//--------Row 2---------
 		
-		case 11011110:	//1101		1110
+		case 21:	//1101		1100
 			key = 4;
 		break;
 		
-		case 11011101:	//1101		1101
+		case 22:	//1101		1010
 			key = 5;
 		break;
 		
-		case 11011011:	//1101		1110
+		case 23:	//1101		0110
 			key = 6;
 		break;
 		
 		//--------Row 3---------
 		
-		case 10111110:	//1011		1110
+		case 31:	//1011		1100
 			key = 7;
 		break;
 		
-		case 10111101:	//1011		1101
+		case 32:	//1011		1010
 			key = 8;
 		break;
 		
-		case 10111011:	//1011		1110
+		case 33:	//1011		0110
 			key = 9;
 		break;
 		
 		//--------Row 4---------
 		
-		case 01111101:	//0111		1101
+		case 41:	//0111		1100
+			key = 10; //DELETE (*)
+		break;
+		
+		case 42:	//0111		1010
 			key = 0;
 		break;
+		
+		case 43:	//0111		0110
+			key = 11;	//ENTER (#)
+		break;
+		
+		default:
+			key = STANDBY;
 		
 	}
 	
 	return key;
 
 }
+
+/** @brief function checking on which column is the pressed key
+		@retval int column number
+*/
+int check_column(){
+	
+	
+	//Columns
+	GPIO_InitDef_KP.Pin 		= GPIO_PIN_9 | GPIO_PIN_10 | GPIO_PIN_11 | GPIO_PIN_12;
+	GPIO_InitDef_KP.Mode 	= GPIO_MODE_INPUT;	// Input Floating
+	GPIO_InitDef_KP.Pull 	= GPIO_PULLUP;
+	GPIO_InitDef_KP.Speed 	= GPIO_SPEED_MEDIUM;
+	HAL_GPIO_Init(GPIOE, &GPIO_InitDef_KP);
+	
+	//Set rows as output to make sure there's no floating values
+	GPIO_InitDef_KP.Pin 		=  GPIO_PIN_11 | GPIO_PIN_12 | GPIO_PIN_13 |GPIO_PIN_14;
+	GPIO_InitDef_KP.Mode 	= GPIO_MODE_OUTPUT_PP;	// combined the previous Mode(OUT) & OType(PP) (Output Push Pull)
+	GPIO_InitDef_KP.Pull 	= GPIO_PULLUP;
+	GPIO_InitDef_KP.Speed 	= GPIO_SPEED_MEDIUM;
+	HAL_GPIO_Init(GPIOB, &GPIO_InitDef_KP);
+	
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_11, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_RESET);
+	
+	if (!HAL_GPIO_ReadPin(GPIOE,GPIO_PIN_9)){ //column 3
+		return 3;
+	}
+	if (!HAL_GPIO_ReadPin(GPIOE,GPIO_PIN_10)){ //column 2
+		return 2;
+	}
+	if (!HAL_GPIO_ReadPin(GPIOE,GPIO_PIN_11)){ //column 1
+		return 1;
+	}
+	else {
+		return NO_KEY_PRESSED;
+	}
+}
+
+/** 
+	* @brief function checking on which row is the pressed key
+	*	@retval int row number
+*/
+int check_row(){
+	
+	
+	
+	
+		//Rows
+		GPIO_InitDef_KP.Pin 		= GPIO_PIN_11 | GPIO_PIN_12 | GPIO_PIN_13 |GPIO_PIN_14;
+		GPIO_InitDef_KP.Mode 	= GPIO_MODE_INPUT; // Input Floating
+		GPIO_InitDef_KP.Pull 	= GPIO_PULLUP;
+		GPIO_InitDef_KP.Speed 	= GPIO_SPEED_MEDIUM;
+		HAL_GPIO_Init(GPIOB, &GPIO_InitDef_KP);
+		
+		//Columns
+		GPIO_InitDef_KP.Pin 		= GPIO_PIN_9 | GPIO_PIN_10 | GPIO_PIN_11 | GPIO_PIN_12;
+		GPIO_InitDef_KP.Mode 	= GPIO_MODE_OUTPUT_PP; // combined the previous Mode(OUT) & OType(PP) (Output Push Pull)
+		GPIO_InitDef_KP.Pull 	= GPIO_PULLUP;
+		GPIO_InitDef_KP.Speed 	= GPIO_SPEED_MEDIUM;
+		HAL_GPIO_Init(GPIOE, &GPIO_InitDef_KP);
+		
+		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_9, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_10, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_11, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_12, GPIO_PIN_RESET);
+		
+		if(!HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_11)){
+			return 4;
+		}
+		if(!HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_12)){
+			return 3;
+		}
+		if(!HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_13)){
+			return 2;
+		}
+		if(!HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_14)){
+			return 1;
+		}
+		else{
+			return NO_KEY_PRESSED;
+		}
+}
+
+
 

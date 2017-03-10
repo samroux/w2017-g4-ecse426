@@ -134,26 +134,31 @@ int main(void)
 	
 	init_accelerometer();
 	
-	printf("Initialized accelerometer\n");
+	printf("Initialized accelerometer...\n");
 	
 	accel_ready = 0;
 	
-	printf("Initializing Keypad\n");
+	printf("Please enter angle on Keypad...\n");
 	
-	KP_GPIO_Init();
+	int req_angle = keypad_input();
+	printf ("requested angle = %d", req_angle);
 	
-	while (0){
+	//while (1){
+		
+
+		
+
+
 		
 		
-		//KP_GPIO_Init();
 		
-		if (accel_ready == 1){
-			accel_ready = 0;
-			
-			printf("%f, %f, %f\n", accelerometer_data[0], accelerometer_data[1], accelerometer_data[2]);	
-		}			
+//		if (accel_ready == 1){
+//			accel_ready = 0;
+//			
+//			printf("%f, %f, %f\n", accelerometer_data[0], accelerometer_data[1], accelerometer_data[2]);	
+//		}			
 	}
-}
+//}
 
 /** System Clock Configuration*/
 void SystemClock_Config(void){

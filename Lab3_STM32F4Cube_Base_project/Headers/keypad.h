@@ -13,6 +13,8 @@ extern GPIO_InitTypeDef GPIO_InitDef_KP;
 /* USER CODE BEGIN Prototypes */
 	 
 void KP_GPIO_Init(void);
+int keypad_interpret(void);
+int keypad_input(void);
 
 /* USER CODE END Prototypes */
 
