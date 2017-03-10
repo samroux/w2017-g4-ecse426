@@ -2,7 +2,7 @@
   ******************************************************************************
   * File Name          : main.c
   * Description        : Main program subroutine
-	* Author						 : Ashraf Suyyagh
+	* Author						 : Chris Di Betta and Samuel Roux
 	* Version            : 1.0.0
 	* Date							 : January 14th, 2016
   ******************************************************************************
@@ -14,14 +14,14 @@
 #include "lis3dsh.h"
 #include "main.h"
 #include "tilt_detect.h"
+#include "timer.h"
 
 /* Private variables ---------------------------------------------------------*/
 float accelerometer_data[3];
 float rolls[5];
 float pitches[5];
-float desiredPitch = 0;
-float desiredRoll = 0;
-TIM_HandleTypeDef tim4_handle;
+float desiredPitch = 55;
+float desiredRoll = 33;
 
 
 /* Private function prototypes -----------------------------------------------*/
@@ -61,100 +61,6 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 	}	
 }	
 
-//Can be used to cause a software delay
-void delay(uint32_t time)
-{
-  TimingDelay = time;
-  while(TimingDelay !=0);
-}
-
-//Timer callback
-void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim) {
-	//Prevent compilation warning
-  UNUSED(htim);
-	
-}
-
-/*
-void init_TIM4(void) {
-	TIM_Base_InitTypeDef initTIM4;
-	
-	// Enable clock for TIM4 
-	__HAL_RCC_TIM4_CLK_ENABLE();
-	
-	// Desired Rate = ClockFrequency / (prescaler * period)
-	// Rate = 2000Hz, frequency = 42MHz, precaler = 1000																	 
-	
-	// Initialize timer 4 initialization struct 
-	initTIM4.Period = 42;			 								// Period is in MHz
-	initTIM4.Prescaler = 1000;
-	//initTIM4.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-	initTIM4.CounterMode = TIM_COUNTERMODE_UP;
-	
-	// Initialize timer 4 handle struct
-	tim4_handle.Instance = TIM4;
-	tim4_handle.Init = initTIM4;
-	tim4_handle.Channel = HAL_TIM_ACTIVE_CHANNEL_CLEARED;
-	tim4_handle.Lock = HAL_UNLOCKED;
-	tim4_handle.State = HAL_TIM_STATE_READY;
-
-	// Initialize timer 4 handle and enable interrupts
-	HAL_TIM_Base_MspInit(&tim4_handle);
-	HAL_TIM_Base_Init(&tim4_handle);
-	HAL_TIM_Base_Start_IT(&tim4_handle);
-		
-	// Configure NVIC 
-	HAL_NVIC_SetPriority(TIM4_IRQn, 0,1);
-	HAL_NVIC_EnableIRQ(TIM4_IRQn);
-	
-	//HAL_NVIC_ClearPendingIRQ(TIM4_IRQn);
-	
-}
-*/
-
-void Timer_Init(void){
-	
-	TIM_ClockConfigTypeDef sClockSourceConfig;
-  TIM_MasterConfigTypeDef sMasterConfig;
-  TIM_OC_InitTypeDef Timer_init;
-	
-	__TIM4_CLK_ENABLE();
-	
-	tim4_handle.Instance = TIM4;
-	
-	tim4_handle.Init.Period = 360;
-	tim4_handle.Init.Prescaler = 117;
-	tim4_handle.Init.RepetitionCounter = 0;
-	tim4_handle.Init.ClockDivision = 0;
-	tim4_handle.Channel = TIM_CHANNEL_ALL;
-	tim4_handle.Init.CounterMode = TIM_COUNTERMODE_UP;
-	
-	HAL_TIM_Base_Init(&tim4_handle);
-	Timer_init.OCMode = TIM_OCMODE_PWM1;
-	Timer_init.OCPolarity = TIM_OCPOLARITY_HIGH;
-	Timer_init.OCIdleState = TIM_OCIDLESTATE_RESET;
-	Timer_init.Pulse = 360;
-	
-//	sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
-//	
-//	HAL_TIM_ConfigClockSource(&tim4_handle, &sClockSourceConfig);
-
-//	HAL_TIM_PWM_Init(&tim4_handle);
-//	
-//	
-//	HAL_NVIC_EnableIRQ(TIM4_IRQn);
-//	HAL_NVIC_SetPriority(TIM4_IRQn, 0, 0);
-}
-
-void PWM_Init(void){
-	HAL_TIM_PWM_Init(&tim4_handle);
-	
-	HAL_TIM_PWM_Start(&tim4_handle, TIM_CHANNEL_1);
-	HAL_TIM_PWM_Start(&tim4_handle, TIM_CHANNEL_2);
-	HAL_TIM_PWM_Start(&tim4_handle, TIM_CHANNEL_3);
-	HAL_TIM_PWM_Start(&tim4_handle, TIM_CHANNEL_4);
-}
-
 int main(void)
 {	
   /* MCU Configuration----------------------------------------------------------*/
@@ -167,8 +73,9 @@ int main(void)
   /* Initialize all configured peripherals */
 	printf("begin\n");
 	
+	/*
 	Timer_Init();
-	//PWM_Init();
+	PWM_Init();
 	//init_TIM4();
 	
 	printf("Initialized tim4\n");
@@ -179,7 +86,9 @@ int main(void)
 	printf("Initialized accelerometer\n");
 	
 	accel_ready = 0;
+	*/
 	
+	/*
 	// LED stuff
 	GPIO_InitTypeDef GPIO_InitStructure;
 	
@@ -202,11 +111,11 @@ int main(void)
 	
 	GPIO_InitDef_LED.Pin 		= GPIO_PIN_15;
 	HAL_GPIO_Init(GPIOD, &GPIO_InitStructure);
+	*/
 	
+	initTimer();
 	
-	
-	
-	
+	/*
 	
 	while (1){
 		if (accel_ready == 1){
@@ -225,6 +134,9 @@ int main(void)
 			float roll = filterResult(&rolls[0]);
 			float pitch = filterResult(&pitches[0]);
 			
+			controlRollLED(desiredRoll, roll);
+			controlPitchLED(desiredPitch, pitch);
+			
 			for(int i = 3; i > -1; i--){
 				rolls[i+1] = rolls[i];
 				pitches[i+1] = pitches[i];
@@ -232,59 +144,8 @@ int main(void)
 			printf("Roll: %f, pitch: %f, no filt roll: %f, no filt pitch: %f\n", roll, pitch, rolls[0], pitches[0]); 
 		}			
 	}
+	*/
 }
-
-/*
-void controlRollLED(float desiredRoll, float currentRoll){
-	float rollDifference = fabs(desiredRoll - currentRoll);
-	
-	if (rollDifference < 5){
-	__HAL_TIM_SetCompare(&tim4_handle, TIM_CHANNEL_1, 0);
-	__HAL_TIM_SetCompare(&tim4_handle, TIM_CHANNEL_3, 0);
-	
-	}
-	else {
-	__HAL_TIM_SetCompare(&tim4_handle, TIM_CHANNEL_1, rollDifference);
-	__HAL_TIM_SetCompare(&tim4_handle, TIM_CHANNEL_3, rollDifference);
-	}
-
-}
-
-void controlPitchLED(float desiredPitch, float currentPitch){
-	float pitchDifference = fabs(desiredRoll - desiredPitch);
-	
-	 if(pitchDifference < 5){
-	__HAL_TIM_SetCompare(&tim4_handle, TIM_CHANNEL_2, 0);
-	__HAL_TIM_SetCompare(&tim4_handle, TIM_CHANNEL_4, 0);
-	}
-	else {
-	__HAL_TIM_SetCompare(&tim4_handle, TIM_CHANNEL_2, pitchDifference);
-	__HAL_TIM_SetCompare(&tim4_handle, TIM_CHANNEL_4, pitchDifference);
-	
-	}
-}
-*/
-
-//Exception Handling for timer
-/*
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *Timer){
-
-	if (Timer->Instance == TIM4){
-		int input = KeyPadGetValue();
-		
-    keyPadInput(input);		
-
-		if(rollValue > 0) {
-			controlRollLED();
-		}
-		 if (pitchValue > 0 ){
-			controlPitchLED();
-		}
-		
-	}
-	  
-}
-*/
 
 /** System Clock Configuration*/
 void SystemClock_Config(void){
