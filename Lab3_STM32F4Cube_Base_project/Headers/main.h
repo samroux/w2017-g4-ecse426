@@ -51,6 +51,9 @@ extern uint32_t TimingDelay;
 
 // Timer handler
 extern TIM_HandleTypeDef handle_tim4;
+extern TIM_ClockConfigTypeDef ClockConfig;
+extern TIM_MasterConfigTypeDef sMasterConfig;
+extern TIM_OC_InitTypeDef sConfigOC;
 
 /* Exported constants --------------------------------------------------------*/
 

@@ -73,14 +73,7 @@ int main(void)
   /* Initialize all configured peripherals */
 	printf("begin\n");
 	
-	/*
-	Timer_Init();
-	PWM_Init();
-	//init_TIM4();
-	
-	printf("Initialized tim4\n");
-	
-	
+	/*	
 	init_accelerometer();
 	
 	printf("Initialized accelerometer\n");
@@ -88,32 +81,10 @@ int main(void)
 	accel_ready = 0;
 	*/
 	
-	/*
-	// LED stuff
-	GPIO_InitTypeDef GPIO_InitStructure;
+	LEDs_Init();
+	Timer_Init();
 	
-	GPIO_InitTypeDef GPIO_InitDef;
-  GPIO_InitTypeDef GPIO_InitDef_LED;
-	
-	__HAL_RCC_GPIOD_CLK_ENABLE();
-	
-	GPIO_InitDef_LED.Pin 		= GPIO_PIN_12| GPIO_PIN_13|GPIO_PIN_14 | GPIO_PIN_15;
-	GPIO_InitDef_LED.Mode 	= GPIO_MODE_AF_PP;
-	GPIO_InitDef_LED.Pull 	= GPIO_PULLDOWN;
-	GPIO_InitDef_LED.Speed 	= GPIO_SPEED_FREQ_MEDIUM; 
-  HAL_GPIO_Init(GPIOD, &GPIO_InitStructure);
-	
-	GPIO_InitDef_LED.Pin 		= GPIO_PIN_13;
-	HAL_GPIO_Init(GPIOD, &GPIO_InitStructure);
-	
-	GPIO_InitDef_LED.Pin 		= GPIO_PIN_14;
-	HAL_GPIO_Init(GPIOD, &GPIO_InitStructure);
-	
-	GPIO_InitDef_LED.Pin 		= GPIO_PIN_15;
-	HAL_GPIO_Init(GPIOD, &GPIO_InitStructure);
-	*/
-	
-	initTimer();
+	printf("finished init timer\n");
 	
 	/*
 	
@@ -154,6 +125,14 @@ void SystemClock_Config(void){
   RCC_ClkInitTypeDef RCC_ClkInitStruct;
 
   __PWR_CLK_ENABLE();
+	
+	__HAL_RCC_GPIOA_CLK_ENABLE();//Enable Clock for GPIO A
+	__HAL_RCC_GPIOB_CLK_ENABLE();//Enable Clock for GPIO B
+	__HAL_RCC_GPIOC_CLK_ENABLE();//Enable Clock for GPIO C
+	__HAL_RCC_GPIOD_CLK_ENABLE();//Enable Clock for GPIO D
+	__HAL_RCC_GPIOE_CLK_ENABLE();//Enable Clock for GPIO E
+
+  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
