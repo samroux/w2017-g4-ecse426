@@ -2,6 +2,7 @@
 #define TILT_DETECT_H
 
 /* Includes ------------------------------------------------------------------*/
+#include "main.h"
 #include <stdint.h>
 #include "stm32f4xx_hal.h"
 #include "lis3dsh.h"
@@ -29,6 +30,15 @@ typedef struct {
 #define ACC33 4.1983
 #define ACC30 0.0005 
 #define conv_to_deg(x) (180.0*x/PI)
+
+//Initiates accelerometer thread -> Returns -1 if there is an error, 0 otherwise
+int start_Thread_Accelerometer (void);
+
+//  Updates x, y, z as a thread
+void Thread_Accelerometer (void const *argument);
+
+//  Updates x, y, z
+void accelerometer_mode(void);
 
 //Updates accelerometer values
 void update_accel(float Ax, float Ay, float Az);

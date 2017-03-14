@@ -42,6 +42,11 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
 #include "lis3dsh.h"
+#include "cmsis_os.h"
+
+#define THREAD_WAIT 0  	 // Signal for thread to wait
+#define THREAD_EXECUTE 2   // Signal for thread to execute
+#define THREAD_TIMEOUT 1000     // Thread timeout value in milliseconds
 
 /* Exported types ------------------------------------------------------------*/
 extern int accel_ready;
@@ -49,11 +54,20 @@ extern uint8_t tim4_flag;
 extern uint16_t tim4_ticks;
 extern uint32_t TimingDelay;
 
+extern void initializeLED_IO	(void);
+extern void start_Thread_LED	(void);
+extern void Thread_LED(void const *argument);
+extern osThreadId tid_Thread_LED;
+
 // Timer handler
 extern TIM_HandleTypeDef handle_tim4;
 extern TIM_ClockConfigTypeDef ClockConfig;
 extern TIM_MasterConfigTypeDef sMasterConfig;
 extern TIM_OC_InitTypeDef sConfigOC;
+
+// Mutexes
+extern osMutexId temperatureMutex;
+extern osMutexId tiltAnglesMutex;
 
 /* Exported constants --------------------------------------------------------*/
 
