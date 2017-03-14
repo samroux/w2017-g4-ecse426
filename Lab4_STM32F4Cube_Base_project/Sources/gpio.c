@@ -37,6 +37,7 @@
 /* USER CODE BEGIN 0 */
 
 GPIO_InitTypeDef GPIO_InitDef_LED;
+GPIO_InitTypeDef GPIO_InitDef_MX;
 
 
 /* USER CODE END 0 */
@@ -79,13 +80,13 @@ GPIOE:
 
 
 
-//void MX_GPIO_Init(){
-//	GPIO_InitDef.Pin 		= GPIO_PIN_4 | GPIO_PIN_5 |GPIO_PIN_6 |GPIO_PIN_7 |GPIO_PIN_8 |GPIO_PIN_9 |GPIO_PIN_10|GPIO_PIN_11|GPIO_PIN_12| GPIO_PIN_13|GPIO_PIN_14 | GPIO_PIN_15;
-//	GPIO_InitDef.Mode 	= GPIO_MODE_OUTPUT_PP; // combined the previous Mode(OUT) & OType(PP)
-//	GPIO_InitDef.Pull 	= GPIO_PULLUP;
-//	GPIO_InitDef.Speed 	= GPIO_SPEED_HIGH; // no more HZ value.
-//	HAL_GPIO_Init(GPIOE, &GPIO_InitDef);
-//}
+void MX_GPIO_Init(){
+	GPIO_InitDef_MX.Pin 		= GPIO_PIN_4 | GPIO_PIN_5 |GPIO_PIN_6 |GPIO_PIN_7 |GPIO_PIN_8 |GPIO_PIN_9 |GPIO_PIN_10|GPIO_PIN_11|GPIO_PIN_12| GPIO_PIN_13|GPIO_PIN_14 | GPIO_PIN_15;
+	GPIO_InitDef_MX.Mode 	= GPIO_MODE_OUTPUT_PP; // combined the previous Mode(OUT) & OType(PP)
+	GPIO_InitDef_MX.Pull 	= GPIO_PULLUP;
+	GPIO_InitDef_MX.Speed 	= GPIO_SPEED_HIGH; // no more HZ value.
+	HAL_GPIO_Init(GPIOE, &GPIO_InitDef_MX);
+}
 
 void LED_GPIO_Init(){
 	GPIO_InitDef_LED.Pin 		= GPIO_PIN_12| GPIO_PIN_13|GPIO_PIN_14 | GPIO_PIN_15;

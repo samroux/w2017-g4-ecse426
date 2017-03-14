@@ -1,8 +1,8 @@
 /**
   ******************************************************************************
-  * File Name          : gpio.h
-  * Description        : This file contains all the functions prototypes for 
-  *                      the gpio  
+  * File Name          : ADC.c
+  * Description        : This file provides code for the configuration
+  *                      of the ADC instances.
   ******************************************************************************
   *
   * COPYRIGHT(c) 2017 STMicroelectronics
@@ -32,59 +32,51 @@
   ******************************************************************************
   */
 
-/* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __gpio_H
-#define __gpio_H
-#ifdef __cplusplus
- extern "C" {
-#endif
-
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f4xx_hal.h"
+#include "adc.h"
 
-/* USER CODE BEGIN Includes */
+ADC_ChannelConfTypeDef ADC_Channel;
 
-/* USER CODE END Includes */
 
-/* USER CODE BEGIN Private defines */
-	 
-#define TEN GPIO_PIN_12
-#define ONE GPIO_PIN_13
-#define DEC GPIO_PIN_14
-#define DEG GPIO_PIN_15
-	 
-#define LED_GREEN GPIO_PIN_12
-#define LED_ORANGE GPIO_PIN_13
-#define LED_RED GPIO_PIN_14
-#define LED_BLUE GPIO_PIN_15
-	 
-	 //initialization of GPIO
-extern GPIO_InitTypeDef GPIO_InitDef_MX;
-extern GPIO_InitTypeDef GPIO_InitDef_LED;
-	 
+void ConfigADC(void){
+		// Populate the struct ADC Handle
 
-/* USER CODE END Private defines */
+	// Instance
+	ADC1_Handle.Instance = ADC1;
 
-void MX_GPIO_Init(void);
-void LED_GPIO_Init(void);
-	 
-void oneDigitDisplay(int num, uint16_t digit);
+	// Init struct (From DOC19 section 4 )
+	ADC1_Handle.Init.ClockPrescaler = ADC_CLOCKPRESCALER_PCLK_DIV4; // Clock Prescaler at 168/4Mhz
+	ADC1_Handle.Init.Resolution = ADC_RESOLUTION_12B; 							// Biggest resolution for best accuracy (12-bit)
+	ADC1_Handle.Init.DataAlign = ADC_DATAALIGN_RIGHT;								// Align the data to the right
+	ADC1_Handle.Init.ScanConvMode = DISABLE;												// One channel only so no scan 
+	ADC1_Handle.Init.EOCSelection = DISABLE;												// Don't use the EOC flag
+	ADC1_Handle.Init.DMAContinuousRequests = DISABLE;								// Not using DMA for now
+	
+	ADC1_Handle.Init.ContinuousConvMode = ENABLE;										// Continuous conversion for stream of data
+	ADC1_Handle.Init.NbrOfConversion = 1;														// Just 1 conversion for continuous is ok
+	
+	ADC1_Handle.Init.DiscontinuousConvMode = DISABLE;								// Want to be continuous conversion
+	ADC1_Handle.Init.NbrOfDiscConversion = 0;												// No discontinuous conversions
+	
+	ADC1_Handle.Init.ExternalTrigConv= ADC_SOFTWARE_START;					// Disable external edges
+	ADC1_Handle.Init.ExternalTrigConvEdge = ADC_SOFTWARE_START;			// Disable external events
 
-/* USER CODE BEGIN Prototypes */
 
-/* USER CODE END Prototypes */
+	// Set Init
+	HAL_ADC_Init(&ADC1_Handle);
 
-#ifdef __cplusplus
+	// Channel config
+	ADC_Channel.Channel = ADC_CHANNEL_16;														// Set to CH16 (Temperature sensor)
+	ADC_Channel.SamplingTime = ADC_SAMPLETIME_480CYCLES; 						// Must be bigger than 15Cycles to work correctly (Ref value, don't know exactly why...)
+	ADC_Channel.Rank = 1;																						// Rank 1 (in group sequencer) & no offset
+	ADC_Channel.Offset = 0;
+
+	// Set Channel
+
+	HAL_ADC_ConfigChannel(&ADC1_Handle, &ADC_Channel);
+	
 }
-#endif
-#endif /*__ pinoutConfig_H */
 
-/**
-  * @}
-  */
 
-/**
-  * @}
-  */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

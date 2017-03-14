@@ -1,8 +1,8 @@
 /**
   ******************************************************************************
-  * File Name          : gpio.h
-  * Description        : This file contains all the functions prototypes for 
-  *                      the gpio  
+  * File Name          : ADC.h
+  * Description        : This file provides code for the configuration
+  *                      of the ADC instances.
   ******************************************************************************
   *
   * COPYRIGHT(c) 2017 STMicroelectronics
@@ -31,10 +31,9 @@
   *
   ******************************************************************************
   */
-
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __gpio_H
-#define __gpio_H
+#ifndef __adc_H
+#define __adc_H
 #ifdef __cplusplus
  extern "C" {
 #endif
@@ -42,33 +41,20 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
 
-/* USER CODE BEGIN Includes */
+/* Global variables ---------------------------------------------------------*/
+// Inintialize ADC handle
+extern ADC_HandleTypeDef ADC1_Handle;
+// Initialize ADC channel config
+extern ADC_ChannelConfTypeDef ADC_Channel;
+	 
+// ADC Initialization
+void ConfigADC(void);
 
-/* USER CODE END Includes */
 
 /* USER CODE BEGIN Private defines */
-	 
-#define TEN GPIO_PIN_12
-#define ONE GPIO_PIN_13
-#define DEC GPIO_PIN_14
-#define DEG GPIO_PIN_15
-	 
-#define LED_GREEN GPIO_PIN_12
-#define LED_ORANGE GPIO_PIN_13
-#define LED_RED GPIO_PIN_14
-#define LED_BLUE GPIO_PIN_15
-	 
-	 //initialization of GPIO
-extern GPIO_InitTypeDef GPIO_InitDef_MX;
-extern GPIO_InitTypeDef GPIO_InitDef_LED;
-	 
 
 /* USER CODE END Private defines */
 
-void MX_GPIO_Init(void);
-void LED_GPIO_Init(void);
-	 
-void oneDigitDisplay(int num, uint16_t digit);
 
 /* USER CODE BEGIN Prototypes */
 
@@ -77,11 +63,11 @@ void oneDigitDisplay(int num, uint16_t digit);
 #ifdef __cplusplus
 }
 #endif
-#endif /*__ pinoutConfig_H */
+#endif /*__ adc_H */
 
-/**
-  * @}
-  */
+
+
+
 
 /**
   * @}

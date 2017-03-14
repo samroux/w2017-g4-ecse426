@@ -192,31 +192,33 @@ int check_column(){
 	
 	
 	//Columns
-	GPIO_InitDef_KP.Pin 		= GPIO_PIN_9 | GPIO_PIN_10 | GPIO_PIN_11 | GPIO_PIN_12;
+	GPIO_InitDef_KP.Pin 		= GPIO_PIN_11 | GPIO_PIN_12 | GPIO_PIN_13 | GPIO_PIN_14;
 	GPIO_InitDef_KP.Mode 	= GPIO_MODE_INPUT;	// Input Floating
-	GPIO_InitDef_KP.Pull 	= GPIO_PULLUP;
-	GPIO_InitDef_KP.Speed 	= GPIO_SPEED_MEDIUM;
-	HAL_GPIO_Init(GPIOE, &GPIO_InitDef_KP);
-	
-	//Set rows as output to make sure there's no floating values
-	GPIO_InitDef_KP.Pin 		=  GPIO_PIN_11 | GPIO_PIN_12 | GPIO_PIN_13 |GPIO_PIN_14;
-	GPIO_InitDef_KP.Mode 	= GPIO_MODE_OUTPUT_PP;	// combined the previous Mode(OUT) & OType(PP) (Output Push Pull)
 	GPIO_InitDef_KP.Pull 	= GPIO_PULLUP;
 	GPIO_InitDef_KP.Speed 	= GPIO_SPEED_MEDIUM;
 	HAL_GPIO_Init(GPIOB, &GPIO_InitDef_KP);
 	
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_11, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_RESET);
+	//Set rows as output to make sure there's no floating values
+	GPIO_InitDef_KP.Pin 		=  GPIO_PIN_9 | GPIO_PIN_10 | GPIO_PIN_11 |GPIO_PIN_12;
+	GPIO_InitDef_KP.Mode 	= GPIO_MODE_OUTPUT_PP;	// combined the previous Mode(OUT) & OType(PP) (Output Push Pull)
+	GPIO_InitDef_KP.Pull 	= GPIO_PULLUP;
+	GPIO_InitDef_KP.Speed 	= GPIO_SPEED_MEDIUM;
+	HAL_GPIO_Init(GPIOD, &GPIO_InitDef_KP);
 	
-	if (!HAL_GPIO_ReadPin(GPIOE,GPIO_PIN_9)){ //column 3
+	//set rows to 1
+	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_RESET);
+	
+	//read columns
+	if (!HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_11)){ //column 3
 		return 3;
 	}
-	if (!HAL_GPIO_ReadPin(GPIOE,GPIO_PIN_10)){ //column 2
+	if (!HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_12)){ //column 2
 		return 2;
 	}
-	if (!HAL_GPIO_ReadPin(GPIOE,GPIO_PIN_11)){ //column 1
+	if (!HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_13)){ //column 1
 		return 1;
 	}
 	else {
@@ -231,34 +233,36 @@ int check_column(){
 int check_row(){
 	
 		//Rows
-		GPIO_InitDef_KP.Pin 		= GPIO_PIN_11 | GPIO_PIN_12 | GPIO_PIN_13 |GPIO_PIN_14;
+		GPIO_InitDef_KP.Pin 		= GPIO_PIN_9 | GPIO_PIN_10 | GPIO_PIN_11 |GPIO_PIN_12;
 		GPIO_InitDef_KP.Mode 	= GPIO_MODE_INPUT; // Input Floating
+		GPIO_InitDef_KP.Pull 	= GPIO_PULLUP;
+		GPIO_InitDef_KP.Speed 	= GPIO_SPEED_MEDIUM;
+		HAL_GPIO_Init(GPIOD, &GPIO_InitDef_KP);
+		
+		//Columns
+		GPIO_InitDef_KP.Pin 		= GPIO_PIN_11 | GPIO_PIN_12 | GPIO_PIN_13 | GPIO_PIN_14;
+		GPIO_InitDef_KP.Mode 	= GPIO_MODE_OUTPUT_PP; // combined the previous Mode(OUT) & OType(PP) (Output Push Pull)
 		GPIO_InitDef_KP.Pull 	= GPIO_PULLUP;
 		GPIO_InitDef_KP.Speed 	= GPIO_SPEED_MEDIUM;
 		HAL_GPIO_Init(GPIOB, &GPIO_InitDef_KP);
 		
-		//Columns
-		GPIO_InitDef_KP.Pin 		= GPIO_PIN_9 | GPIO_PIN_10 | GPIO_PIN_11 | GPIO_PIN_12;
-		GPIO_InitDef_KP.Mode 	= GPIO_MODE_OUTPUT_PP; // combined the previous Mode(OUT) & OType(PP) (Output Push Pull)
-		GPIO_InitDef_KP.Pull 	= GPIO_PULLUP;
-		GPIO_InitDef_KP.Speed 	= GPIO_SPEED_MEDIUM;
-		HAL_GPIO_Init(GPIOE, &GPIO_InitDef_KP);
+		//set columns to 1
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_11, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_RESET);
 		
-		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_9, GPIO_PIN_RESET);
-		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_10, GPIO_PIN_RESET);
-		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_11, GPIO_PIN_RESET);
-		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_12, GPIO_PIN_RESET);
-		
-		if(!HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_11)){
+		//read rows
+		if(!HAL_GPIO_ReadPin(GPIOD,GPIO_PIN_9)){
 			return 4;
 		}
-		if(!HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_12)){
+		if(!HAL_GPIO_ReadPin(GPIOD,GPIO_PIN_10)){
 			return 3;
 		}
-		if(!HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_13)){
+		if(!HAL_GPIO_ReadPin(GPIOD,GPIO_PIN_11)){
 			return 2;
 		}
-		if(!HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_14)){
+		if(!HAL_GPIO_ReadPin(GPIOD,GPIO_PIN_12)){
 			return 1;
 		}
 		else{
