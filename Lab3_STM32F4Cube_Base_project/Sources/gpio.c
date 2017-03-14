@@ -36,6 +36,8 @@
 #include "gpio.h"
 /* USER CODE BEGIN 0 */
 
+GPIO_InitTypeDef GPIO_InitDef_LED;
+
 
 /* USER CODE END 0 */
 

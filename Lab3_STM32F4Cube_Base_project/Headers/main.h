@@ -41,9 +41,20 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
+#include "lis3dsh.h"
 
 /* Exported types ------------------------------------------------------------*/
 extern int accel_ready;
+extern uint8_t tim4_flag;
+extern uint16_t tim4_ticks;
+extern uint32_t TimingDelay;
+
+// Timer handler
+extern TIM_HandleTypeDef handle_tim4;
+extern TIM_ClockConfigTypeDef ClockConfig;
+extern TIM_MasterConfigTypeDef sMasterConfig;
+extern TIM_OC_InitTypeDef sConfigOC;
+
 /* Exported constants --------------------------------------------------------*/
 
 /* Exported macro ------------------------------------------------------------*/

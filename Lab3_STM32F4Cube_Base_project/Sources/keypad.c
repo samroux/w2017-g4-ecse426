@@ -68,6 +68,7 @@ int keypad_input (){
 		}
 		
 		if ((temp == ENTER && pressed == 0) || i == 3){
+			pressed = 1;
 			req_angle = angle/10;
 			angle = 0;	//reset angle
 			i = 0;			//reset i

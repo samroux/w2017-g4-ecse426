@@ -2,56 +2,51 @@
   ******************************************************************************
   * File Name          : main.c
   * Description        : Main program subroutine
-	* Author						 : Ashraf Suyyagh
+	* Author						 : Chris Di Betta and Samuel Roux
 	* Version            : 1.0.0
 	* Date							 : January 14th, 2016
   ******************************************************************************
   */
 	
 /* Includes ------------------------------------------------------------------*/
+#include "stm32f4xx_hal.h"
 #include "supporting_functions.h"
 #include "lis3dsh.h"
 #include "main.h"
 #include "tilt_detect.h"
+#include "timer.h"
 #include "keypad.h"
 
 /* Private variables ---------------------------------------------------------*/
-float accelerometer_data[3];	
-TIM_HandleTypeDef tim3_handle;
-
-GPIO_InitTypeDef GPIO_InitDef;
-GPIO_InitTypeDef GPIO_InitDef_LED;
-
+float accelerometer_data[3];
+float rolls[5];
+float pitches[5];
+int desiredPitch = 0;
+int desiredRoll = 0;
 
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config	(void);
 
-//CLK Start for all peripherals
-void CLKStart(void);
+void CLKStart (void);
 
 typedef struct {
 	float b[5];
 }FIR_coeff;
 
-//FIR_coeff coeff = {//FIR Filter coefficients
-//	.b[0] = 0.1,
-//	.b[1] = 0.15,
-//	.b[2] = 0.5,
-//	.b[3] = 0.15,
-//	.b[4] = 0.1
-//};
+FIR_coeff coeff = {//FIR Filter coefficients
+	.b[0] = 0.1,
+	.b[1] = 0.15,
+	.b[2] = 0.5,
+	.b[3] = 0.15,
+	.b[4] = 0.1
+};
 
-	//define coeffcients array
-  float coeff[] = {0.1,0.15,0.5,0.15,0.1};
-
-uint32_t filterResult(uint32_t* p) {//FIR filter for noise reduction 
-	uint32_t res = 0;
+float filterResult(float* p) {//FIR filter for noise reduction 
+	float res = 0;
 	
-	int i = 0;
-	
-	for(i = 4; i >= 0; i--) {
-		res += *(p+i)*(coeff[4-i]);
+	for(int i = 4; i >= 0; i--) {
+		res += *(p+i)*(coeff.b[4-i]);
 	}
 	return res;
 }
@@ -59,7 +54,7 @@ uint32_t filterResult(uint32_t* p) {//FIR filter for noise reduction
 //Input capture callback
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 	
-	//Compilation warning
+	//Prevent Compilation warning
   __IO uint32_t tmpreg = 0x00;
   UNUSED(tmpreg); 
 	
@@ -68,51 +63,6 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 		LIS3DSH_ReadACC(accelerometer_data);
 	}	
 }	
-
-//Timer callback
-void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim) {
-	//Prevent comilation warning
-  UNUSED(htim);
-	
-}
-
-/* Might not be needed, dont really know what it does tbh
-void init_TIM3(void) {
-	TIM_Base_InitTypeDef initTIM3;
-	
-	// Enable clock for TIM3 
-	__HAL_RCC_TIM3_CLK_ENABLE();
-	
-	// Desired Rate = ClockFrequency / (prescaler * period)
-	// Rate = 1000Hz, frequency = 42MHz																		 TODO: FIX to 500 HZ
-	// need to setup period and prescaler
-	// set rate to 500Hz
-	
-	// Initialize timer 3 initialization struct 
-	initTIM3.Period = 42;			 								// Period is in MHz
-	initTIM3.Prescaler = 2000;
-	initTIM3.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-	initTIM3.CounterMode = TIM_COUNTERMODE_UP;
-	
-	// Initialize timer 3 handle struct
-	tim3_handle.Instance = TIM3;
-	tim3_handle.Init = initTIM3;
-	tim3_handle.Channel = HAL_TIM_ACTIVE_CHANNEL_CLEARED;
-	tim3_handle.Lock = HAL_UNLOCKED;
-	tim3_handle.State = HAL_TIM_STATE_READY;
-
-	// Initialize timer 3 handle and enable interrupts
-	HAL_TIM_Base_MspInit(&tim3_handle);
-	HAL_TIM_Base_Init(&tim3_handle);
-	HAL_TIM_Base_Start_IT(&tim3_handle);
-		
-	// Configure NVIC 
-	HAL_NVIC_EnableIRQ(TIM3_IRQn);
-	HAL_NVIC_SetPriority(TIM3_IRQn, 0,0);
-	//HAL_NVIC_ClearPendingIRQ(TIM3_IRQn);
-	
-}
-*/
 
 int main(void)
 {	
@@ -123,42 +73,79 @@ int main(void)
   /* Configure the system clock */
   SystemClock_Config();
 	
+  /* Initialize all configured peripherals */
+	printf("begin\n");
+	
 	CLKStart();
 	
-  /* Initialize all configured peripherals */
-	printf("begin");
-	
-	//init_TIM3();
-	
-	printf("Initialized TIM3\n");
-	
+	/*Initialize accelerometer*/
 	init_accelerometer();
 	
-	printf("Initialized accelerometer...\n");
+	printf("Initialized accelerometer\n");
 	
 	accel_ready = 0;
-	
-	printf("Please enter angle on Keypad...\n");
-	
-	int req_angle = keypad_input();
-	printf ("requested angle = %d", req_angle);
-	
-	//while (1){
-		
 
-		
-
-
-		
-		
-		
-//		if (accel_ready == 1){
-//			accel_ready = 0;
-//			
-//			printf("%f, %f, %f\n", accelerometer_data[0], accelerometer_data[1], accelerometer_data[2]);	
-//		}			
+	/*Initialize timer for LEDs*/
+	LEDs_Init();
+	Timer_Init();
+	
+	//Interact with keypad to get desired roll angle
+	printf("Please enter roll angle on Keypad...\n");
+	desiredRoll = keypad_input();
+	printf ("Desired Roll = %d\n", desiredRoll);
+	
+	int j =0;
+	
+	//That's a way of a few seconds (2-3)
+	while (j < 100000000){
+		j+=1;
 	}
-//}
+	
+	//Interact with keypad to get desired pitch angle
+	printf("Please enter pitch angle on Keypad...\n");
+	desiredPitch = keypad_input();
+	printf ("Desired Pitch = %d\n", desiredPitch);
+	
+	while (1){
+		if (accel_ready == 1){
+			accel_ready = 0;
+			
+			//printf("%f, %f, %f\n", accelerometer_data[0], accelerometer_data[1], accelerometer_data[2]);	
+			
+			update_accel(accelerometer_data[0], accelerometer_data[1], accelerometer_data[2]);
+			
+			//Uncomment to see uncalibrated version
+			//update_accel2(accelerometer_data[0], accelerometer_data[1], accelerometer_data[2]);
+			
+			rolls[0] = calc_roll();
+			pitches[0] = calc_pitch();
+			
+			float roll = filterResult(&rolls[0]);
+			float pitch = filterResult(&pitches[0]);
+			
+			//controlRollLED(desiredRoll, roll);
+			//controlPitchLED(desiredPitch, pitch);
+			
+			float roll_uf = rolls[0];
+			float pitch_uf = pitches[0];
+			
+			int value_roll = fabs(desiredRoll-roll_uf);
+			int value_pitch = fabs(desiredPitch-pitch_uf);
+			
+			setRollDC(value_roll);
+			setPitchDC(value_pitch);
+			
+			for(int i = 3; i > -1; i--){
+				rolls[i+1] = rolls[i];
+				pitches[i+1] = pitches[i];
+			}
+			//printf("Roll: %f, pitch: %f, no filt roll: %f, no filt pitch: %f\n", roll, pitch, rolls[0], pitches[0]); //display both filtered and unfiltered data
+			
+			printf("Roll: %f, pitch: %f\n", rolls[0], pitches[0]);
+			
+		}			
+	}
+}
 
 /** System Clock Configuration*/
 void SystemClock_Config(void){
@@ -199,7 +186,6 @@ void SystemClock_Config(void){
   HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
 }
 
-
 /**Start all necessary clocks*/
 void CLKStart(void){
 	
@@ -214,7 +200,6 @@ void CLKStart(void){
 	__HAL_RCC_GPIOB_CLK_ENABLE(); 	//Enable GPIOB clock (used for pins)
 	__HAL_RCC_GPIOD_CLK_ENABLE();		//Enable GPIOD clock (used for LED and pins)
 	__HAL_RCC_GPIOE_CLK_ENABLE(); 	//Enable GPIOE clock (used for pins)
-
 }
 
 #ifdef USE_FULL_ASSERT
