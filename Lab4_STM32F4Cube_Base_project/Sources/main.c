@@ -11,11 +11,14 @@
 #include "stm32f4xx_hal.h"              // Keil::Device:STM32Cube HAL:Common
 #include "cmsis_os.h"                   // ARM::CMSIS:RTOS:Keil RTX
 #include "RTE_Components.h"             // Component selection
+#include "main.h"
 
 extern void initializeLED_IO			(void);
 extern void start_Thread_LED			(void);
 extern void Thread_LED(void const *argument);
 extern osThreadId tid_Thread_LED;
+
+int accel_ready;
 
 /**
 	These lines are mandatory to make CMSIS-RTOS RTX work with te new Cube HAL
@@ -81,4 +84,19 @@ int main (void) {
 	/* User codes ends here*/
   
 	osKernelStart();                          /* start thread execution         */
+}
+
+/**
+  * @brief  This function handles accelerometer interrupt requests
+  * @param  None
+  * @retval None
+  */
+void EXTI0_IRQHandler(void){
+	
+	// Listen to pin 0
+	HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_0);
+	
+	// Flag for interrupt
+	accel_ready = 1;
+
 }
