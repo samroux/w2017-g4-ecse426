@@ -17,11 +17,6 @@
 #include "temp.h"
 #include "adc.h"
 
-extern void initializeLED_IO			(void);
-extern void start_Thread_LED			(void);
-extern void Thread_LED(void const *argument);
-extern osThreadId tid_Thread_LED;
-
 
 /* Private variables ---------------------------------------------------------*/
 
