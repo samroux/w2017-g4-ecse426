@@ -6,17 +6,37 @@
 */
 #include "tilt_detect.h"
 #include "main.h"
+#include "timer.h"
 
 accelerometer_axes axes;
 osThreadId tilt_thread;
-float accelerometer_out[3];
+float accelerometer_data[3];
 accelerometer_axes accel;
 float accel_x, accel_y, accel_z;
 float rollValue, pitchValue;
 const void* tiltAnglesMutexPtr;
 osMutexId tiltAnglesMutex;
 
+int accel_ready;
+float rolls[5];
+float pitches[5];
+int desiredPitch = 0;
+int desiredRoll = 0;
+
 osThreadDef(Thread_Accelerometer, osPriorityNormal, 1, NULL); 
+
+//Input capture callback
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
+	
+	//Prevent Compilation warning
+  __IO uint32_t tmpreg = 0x00;
+  UNUSED(tmpreg); 
+	
+	// If callback is associated with the given pin, then read the data
+	if(GPIO_Pin == GPIO_PIN_0) {
+		LIS3DSH_ReadACC(accelerometer_data);
+	}	
+}	
 
 //Initiates accelerometer thread -> Returns -1 if there is an error, 0 otherwise
 int start_Thread_Accelerometer (void) {
@@ -45,12 +65,46 @@ void Thread_Accelerometer (void const *argument){
 // Updates x, y, z 
 void accelerometer_mode(void) {
 	
-	// Access accelerometer_out and then calculate real values
-	update_accel(accelerometer_out[0], accelerometer_out[1], accelerometer_out[2]);
-	//printf("%f\n", accelerometer_out[2]);
-	
-	
-	// TODO: Filter updated accelerometer values
+	if (accel_ready == 1){
+			float roll, pitch, roll_uf, pitch_uf;
+			int value_roll, value_pitch;
+			int i;
+		
+			accel_ready = 0;
+			
+			//printf("%f, %f, %f\n", accelerometer_data[0], accelerometer_data[1], accelerometer_data[2]);	
+			
+			update_accel(accelerometer_data[0], accelerometer_data[1], accelerometer_data[2]);
+			
+			//Uncomment to see uncalibrated version
+			//update_accel2(accelerometer_data[0], accelerometer_data[1], accelerometer_data[2]);
+			
+			rolls[0] = calc_roll();
+			pitches[0] = calc_pitch();
+			
+			roll = filterResult(&rolls[0]);
+			pitch = filterResult(&pitches[0]);
+			
+			//controlRollLED(desiredRoll, roll);
+			//controlPitchLED(desiredPitch, pitch);
+			
+			roll_uf = rolls[0];
+			pitch_uf = pitches[0];
+			
+			value_roll = fabs(desiredRoll-roll_uf);
+			value_pitch = fabs(desiredPitch-pitch_uf);
+			
+			setRollDC(value_roll);
+			setPitchDC(value_pitch);
+			
+			for(i = 3; i > -1; i--){
+				rolls[i+1] = rolls[i];
+				pitches[i+1] = pitches[i];
+			}
+			//printf("Roll: %f, pitch: %f, no filt roll: %f, no filt pitch: %f\n", roll, pitch, rolls[0], pitches[0]); //display both filtered and unfiltered data
+			
+			printf("Roll: %f, pitch: %f\n", rolls[0], pitches[0]);
+	}
 	
 	// Calculate tilt angles when permission to resources granted
 	osMutexWait(tiltAnglesMutex, (uint32_t) THREAD_TIMEOUT);
@@ -61,7 +115,8 @@ void accelerometer_mode(void) {
 }
 
 // Initialize accelerometer
-void init_accelerometer(void) {
+void init_accelerometer(void) 
+{
 	
 	//Configure LIS3DSH accelermoter sensor
 	LIS3DSH_InitTypeDef init;

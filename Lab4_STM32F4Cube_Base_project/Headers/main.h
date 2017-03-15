@@ -46,8 +46,8 @@
 
 #define THREAD_WAIT 0  	 // Signal for thread to wait
 #define THREAD_EXECUTE 2   // Signal for thread to execute
-#define THREAD_TIMEOUT 100     // Thread timeout value in milliseconds
-#define THREAD_DELAY 100
+#define THREAD_TIMEOUT 50    // Thread timeout value in milliseconds
+#define THREAD_DELAY 20
 
 /* Exported types ------------------------------------------------------------*/
 extern int accel_ready;
@@ -74,6 +74,7 @@ extern osMutexId tiltAnglesMutex;
 
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
+float filterResult(float* p);
 
 #endif /* __MAIN_H */
 
