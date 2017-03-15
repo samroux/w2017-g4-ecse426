@@ -9,6 +9,11 @@
 	 
 extern GPIO_InitTypeDef GPIO_InitDef_KP;
 	 
+#define NO_KEY_PRESSED -1
+#define DELETE 10
+#define ENTER 11
+#define STANDBY 100
+	 
 	 
 /* USER CODE BEGIN Prototypes */
 	 

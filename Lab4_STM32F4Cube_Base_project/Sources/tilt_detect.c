@@ -20,8 +20,7 @@ osMutexId tiltAnglesMutex;
 int accel_ready;
 float rolls[5];
 float pitches[5];
-int desiredPitch = 0;
-int desiredRoll = 0;
+
 
 osThreadDef(Thread_Accelerometer, osPriorityNormal, 1, NULL); 
 

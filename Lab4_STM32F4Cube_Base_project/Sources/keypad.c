@@ -11,11 +11,6 @@
 #include "lis3dsh.h"
 #include "keypad.h"
 
-#define NO_KEY_PRESSED -1
-#define DELETE 10
-#define ENTER 11
-#define STANDBY 100
-
 GPIO_InitTypeDef GPIO_InitDef_KP;
 
 int check_column (void);

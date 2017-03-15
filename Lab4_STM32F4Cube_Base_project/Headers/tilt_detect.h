@@ -10,6 +10,10 @@
 
 /* Private typedef -----------------------------------------------------------*/
 
+extern int desiredRoll;
+extern int desiredPitch;
+
+
 typedef struct {
 	float x; 
 	float y; 
