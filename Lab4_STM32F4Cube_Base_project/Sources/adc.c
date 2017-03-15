@@ -34,6 +34,10 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "adc.h"
+#include "main.h"
+
+osMutexId temperatureMutex;
+const void* temperatureMutexPtr;
 
 ADC_ChannelConfTypeDef ADC_Channel;
 
@@ -74,6 +78,9 @@ void ConfigADC(void){
 	// Set Channel
 
 	HAL_ADC_ConfigChannel(&ADC1_Handle, &ADC_Channel);
+	
+	// Initialize temperature sensor mutex
+	temperatureMutex = osMutexCreate(temperatureMutexPtr);
 	
 }
 

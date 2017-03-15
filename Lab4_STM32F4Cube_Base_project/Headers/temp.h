@@ -7,7 +7,11 @@
 
 #include "stm32f4xx_hal.h"
 #include "lis3dsh.h"
+	 
+int start_Thread_TempSensor (void);
 
+void Thread_TempSensor (void const *argument); 
+	 
 float doTempStuff(void);
 
 void stopAlarm(void);

@@ -1,15 +1,43 @@
 #include "stm32f4xx_hal.h"              // Keil::Device:STM32Cube HAL:Common
 #include "temp.h"
 #include "gpio.h"
+#include "main.h"
 
 int counter = 0;
 float display_temp;
 
-
+osThreadId temp_thread; 
 ADC_HandleTypeDef ADC1_Handle;
 
 
+osThreadDef(Thread_TempSensor, osPriorityNormal, 1, NULL); 
 
+//  Initiates temperature sensor thread -> returns -1 if error, 0 if successful
+int start_Thread_TempSensor (void) {
+
+  temp_thread = osThreadCreate(osThread(Thread_TempSensor), NULL); 
+  if (!temp_thread){
+		printf("Error starting temperature sensor thread!");
+		return(-1); 
+	}
+  return(0);
+}
+
+//Updates temperature as a thread
+void Thread_TempSensor (void const *argument){
+	
+	osEvent Status_TempSensor;
+
+	// Update temperature values when signaled to do so, clear said signal after execution
+	while(1){
+		
+		Status_TempSensor = osSignalWait((int32_t) THREAD_EXECUTE, (uint32_t) THREAD_TIMEOUT);
+		doTempStuff();
+
+	}                                                       
+}
+
+//Updates temperature
 float doTempStuff( ){
 	float temperature_c;
 	float ADCValue;
