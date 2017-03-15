@@ -140,7 +140,7 @@ Starting all necessary clocks
 	
 	int ten, one, dec = 0;
 	
-	int delay = 3;
+	int delay = 30;
 	
 	int tCal = temp * 10; //multiply by 10 to remove decimal place
 	
@@ -157,16 +157,19 @@ Starting all necessary clocks
 	
 	ten = tCal % 10;
 	
-	HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()/1000); // increase frequency for better rendering
+	//HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()/1000); // increase frequency for better rendering
 	
 	oneDigitDisplay (ten, TEN); //digit at position 10^1
-	HAL_Delay(delay);  //delay here is to make sure we see digit long enough
+	//osDelay(delay);  //delay here is to make sure we see digit long enough
+	osSignalWait(0x0004, THREAD_DELAY);
 	
 	oneDigitDisplay (one, ONE); //digit at position 10^0
-	HAL_Delay(delay);
+	//osDelay(delay);
+	osSignalWait(0x0004, THREAD_DELAY);
 	
 	oneDigitDisplay (dec, DEC); //digit at position 10^-1
-	HAL_Delay(delay);
+	//osDelay(delay);
+	osSignalWait(0x0004, THREAD_DELAY);
 	
 	if(mode == 0){ //Celsius
 		oneDigitDisplay (100, DEG);
@@ -174,9 +177,9 @@ Starting all necessary clocks
 	else{ // farheneith
 		oneDigitDisplay (101, DEG);
 	}
-	HAL_Delay(delay);
+	osDelay(delay);
 	
-	HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()/100); // restore frequency
+	//HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()/100); // restore frequency
 
 }
 

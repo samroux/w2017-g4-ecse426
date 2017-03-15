@@ -177,10 +177,10 @@ int main (void) {
   start_Thread_LED();                       /* Create LED thread              */
 	/* User codes ends here*/
 	
-	while(1){
-		temperature_c = doTempStuff();
-	}
-  
+//	while(1){
+//		temperature_c = doTempStuff();
+//	}
+	
   osKernelStart();                          /* start thread execution         */
 }
 

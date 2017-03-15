@@ -46,7 +46,8 @@
 
 #define THREAD_WAIT 0  	 // Signal for thread to wait
 #define THREAD_EXECUTE 2   // Signal for thread to execute
-#define THREAD_TIMEOUT 1000     // Thread timeout value in milliseconds
+#define THREAD_TIMEOUT 100     // Thread timeout value in milliseconds
+#define THREAD_DELAY 100
 
 /* Exported types ------------------------------------------------------------*/
 extern int accel_ready;
