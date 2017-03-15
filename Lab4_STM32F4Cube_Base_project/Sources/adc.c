@@ -79,6 +79,8 @@ void ConfigADC(void){
 
 	HAL_ADC_ConfigChannel(&ADC1_Handle, &ADC_Channel);
 	
+	HAL_ADC_Start(&ADC1_Handle);
+	
 	// Initialize temperature sensor mutex
 	temperatureMutex = osMutexCreate(temperatureMutexPtr);
 	

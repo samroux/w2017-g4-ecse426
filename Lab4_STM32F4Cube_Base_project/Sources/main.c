@@ -124,7 +124,6 @@ void SystemClock_Config(void) {
   * Main function
   */
 int main (void) {
-	uint32_t tickStart;
 	int j;
 	int LED_length;
 	float temperature_c;	
@@ -143,19 +142,14 @@ int main (void) {
 	
 	/*Cnfigure ADC instance*/
 	ConfigADC();
+	start_Thread_TempSensor();
 	
-	/* Start ADC*/
-	HAL_ADC_Start(&ADC1_Handle);
+	init_accelerometer();
+	start_Thread_Accelerometer();
 	
 	/*Initialize GPIO*/
 	MX_GPIO_Init();
 	LED_GPIO_Init();
- 
-	// set sensor data acqusition frequency to 100hz
-	HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()/100); // where argument is Number of ticks between two interrupts
-
-
-	
 	
 	LED_length = 300;
 	temperature_c = 0;
