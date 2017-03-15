@@ -16,6 +16,7 @@
 #include "keypad.h"
 #include "temp.h"
 #include "adc.h"
+#include "gpio.h"
 
 
 /* Private variables ---------------------------------------------------------*/
@@ -56,23 +57,16 @@ uint32_t HAL_GetTick(void) {
 #endif
 
 
-typedef struct {
-	float b[5];
-}FIR_coeff;
 
-FIR_coeff coeff = {//FIR Filter coefficients
-	.b[0] = 0.1,
-	.b[1] = 0.15,
-	.b[2] = 0.5,
-	.b[3] = 0.15,
-	.b[4] = 0.1
-};
+float b[5] = {0.1, 0.15, 0.5, 0.15, 0.1};
+
 
 float filterResult(float* p) {//FIR filter for noise reduction 
 	float res = 0;
+	int i = 0;
 	
-	for(int i = 4; i >= 0; i--) {
-		res += *(p+i)*(coeff.b[4-i]);
+	for(i = 4; i >= 0; i--) {
+		res += *(p+i)*(b[4-i]);
 	}
 	return res;
 }
@@ -130,7 +124,12 @@ void SystemClock_Config(void) {
   * Main function
   */
 int main (void) {
-
+	uint32_t tickStart;
+	int j;
+	int LED_length;
+	float temperature_c;	
+	int green, orange, red, blue;
+	
 	/* Initialize all configured peripherals */
 	printf("begin\n");
 	
@@ -156,20 +155,17 @@ int main (void) {
 	HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()/100); // where argument is Number of ticks between two interrupts
 
 
-	uint32_t tickStart;
 	
-	int LED_length = 300;
-	float temperature_c = 0;
 	
-	int green, orange, red, blue;
-	
+	LED_length = 300;
+	temperature_c = 0;
 	
 	//Interact with keypad to get desired roll angle
 	printf("Please enter roll angle on Keypad...\n");
 	desiredRoll = keypad_input();
 	printf ("Desired Roll = %d\n", desiredRoll);
 	
-	int j =0;
+	j =0;
 	
 	//That's a way of a few seconds (2-3)
 	while (j < 10000000){

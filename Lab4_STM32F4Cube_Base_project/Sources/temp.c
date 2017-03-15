@@ -43,15 +43,16 @@ float doTempStuff( ){
 	float ADCValue;
 	int displayMode = 0;
 	
-	if (HAL_ADC_PollForConversion (&ADC1_Handle, 100) == HAL_OK){
 			
-			ADCValue = HAL_ADC_GetValue(&ADC1_Handle);
-			printf("ADCvalue: %.6f\n",ADCValue);
+	ADCValue = HAL_ADC_GetValue(&ADC1_Handle);
+	printf("ADCvalue: %.6f\n",ADCValue);
 			
-			temperature_c = ConvertTemp(ADCValue); 
-			printf("Temperature_c: %.6f\n",temperature_c);
-			
-		}
+	osMutexWait(temperatureMutex, (uint32_t) THREAD_TIMEOUT);
+	
+	temperature_c = ConvertTemp(ADCValue); 
+	printf("Temperature_c: %.6f\n",temperature_c);
+	
+	osMutexRelease(temperatureMutex);
 	
 	if (counter ==0){
 		display_temp = temperature_c;
@@ -137,17 +138,16 @@ Starting all necessary clocks
 */	
 	//mode: 0 = Celsius, 1 = Fahrenheit
 	
-	if(mode == 1){
-		temp = convertToF(temp);
-		printf("temp_f: %.6f\n",temp);
-	}
-
-	
 	int ten, one, dec = 0;
 	
 	int delay = 3;
 	
 	int tCal = temp * 10; //multiply by 10 to remove decimal place
+	
+	if(mode == 1){
+		temp = convertToF(temp);
+		printf("temp_f: %.6f\n",temp);
+	}
 	
 	dec = tCal % 10;
 	tCal = tCal / 10;
