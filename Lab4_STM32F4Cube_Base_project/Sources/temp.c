@@ -3,7 +3,11 @@
 #include "gpio.h"
 #include "main.h"
 
+void alarmRotate(int ledSpeedCounter);
+void reset_7_segments(void);
+
 int counter = 0;
+int counter_2 = 0;
 float display_temp;
 
 osThreadId temp_thread; 
@@ -27,12 +31,34 @@ int start_Thread_TempSensor (void) {
 void Thread_TempSensor (void const *argument){
 	
 	osEvent Status_TempSensor;
+	
+	int temperature_c = 0;\
+	int ledSpeedCounter = 0;
 
 	// Update temperature values when signaled to do so, clear said signal after execution
 	while(1){
 		
 		Status_TempSensor = osSignalWait((int32_t) THREAD_EXECUTE, (uint32_t) THREAD_TIMEOUT);
-		doTempStuff();
+		
+		temperature_c = doTempStuff();
+		
+		ledSpeedCounter++;
+		if (temperature_c > OVERHEAT){
+			printf("OVERHEAT");
+			alarmRotate(ledSpeedCounter);
+			counter_2++;
+				if(counter_2 >= 30) {
+					counter_2 = 0;
+					reset_7_segments();
+					osDelay(200);					
+				}	
+		}
+		else{//Turn off LEDs when temperature goes below threshold
+			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_RESET); 
+			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, GPIO_PIN_RESET); 
+			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, GPIO_PIN_RESET); 
+			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_15, GPIO_PIN_RESET);		
+		}
 
 	}                                                       
 }
@@ -45,12 +71,15 @@ float doTempStuff( ){
 	
 			
 	ADCValue = HAL_ADC_GetValue(&ADC1_Handle);
-	printf("ADCvalue: %.6f\n",ADCValue);
+	//printf("ADCvalue: %.6f\n",ADCValue);
 			
 	osMutexWait(temperatureMutex, (uint32_t) THREAD_TIMEOUT);
 	
-	temperature_c = ConvertTemp(ADCValue); 
-	printf("Temperature_c: %.6f\n",temperature_c);
+	temperature_c = ConvertTemp(ADCValue);
+	
+	if(state == TEMP_MODE){
+			printf("Temperature_c: %.6f\n",temperature_c);
+	}
 	
 	osMutexRelease(temperatureMutex);
 	
@@ -72,7 +101,8 @@ float doTempStuff( ){
 			displayTemperature (display_temp, displayMode); //displayTemperature on 4 digit 7-segments display
 		}
 		
-		printf("DisplayTemp: %.6f\n",display_temp);
+		//if(state == TEMP_MODE){
+			//printf("DisplayTemp: %.6f\n",display_temp);}
 		
 		
 		return temperature_c;
@@ -132,7 +162,6 @@ float ConvertTemp(int ADCValue){
 Display temparature on 4-digits 7 segments display
 */
 void displayTemperature(float temp, int mode){
-	
 /**
 Starting all necessary clocks	
 */	
@@ -177,9 +206,54 @@ Starting all necessary clocks
 	else{ // farheneith
 		oneDigitDisplay (101, DEG);
 	}
-	osDelay(delay);
+	//osDelay(delay);
+	
+	osSignalWait(0x0004, THREAD_DELAY);
 	
 	//HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()/100); // restore frequency
 
 }
 
+
+void alarmRotate(int ledSpeedCounter) {//Triggers 4 LEDs to rotate when temperature reaches threshold
+		
+	int counter = ledSpeedCounter % 200;
+	
+	//Toggles the LEDS in a circle pattern
+	if(counter < 50 ){
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_15, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_SET); 
+	}
+	
+	else if(counter < 100){
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_RESET); 
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, GPIO_PIN_SET); 
+	}
+	
+	else if(counter < 150){
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, GPIO_PIN_RESET); 
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, GPIO_PIN_SET); 
+	}
+	
+	else if(counter < 200){
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, GPIO_PIN_RESET); 
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_15, GPIO_PIN_SET); 
+	}
+}	
+
+
+
+void reset_7_segments (){
+			HAL_GPIO_WritePin(GPIOE, GPIO_PIN_4, GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(GPIOE, GPIO_PIN_5, GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(GPIOE, GPIO_PIN_6, GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(GPIOE, GPIO_PIN_7, GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(GPIOE, GPIO_PIN_8, GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(GPIOE, GPIO_PIN_8, GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(GPIOE, GPIO_PIN_10, GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(GPIOE, GPIO_PIN_11, GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(GPIOE, GPIO_PIN_12, GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(GPIOE, GPIO_PIN_13, GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(GPIOE, GPIO_PIN_14, GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(GPIOE, GPIO_PIN_15, GPIO_PIN_RESET);
+}

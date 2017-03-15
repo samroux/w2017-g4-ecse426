@@ -32,7 +32,7 @@ int start_Thread_LED (void) {
 	void Thread_LED (void const *argument) {
 		while(1){
 				osDelay(1000);
-				HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_12);
+				//HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_12);
 			}
 	}
 /*----------------------------------------------------------------------------

@@ -194,7 +194,7 @@ int check_column(){
 	HAL_GPIO_Init(GPIOB, &GPIO_InitDef_KP);
 	
 	//Set rows as output to make sure there's no floating values
-	GPIO_InitDef_KP.Pin 		=  GPIO_PIN_9 | GPIO_PIN_10 | GPIO_PIN_11 |GPIO_PIN_12;
+	GPIO_InitDef_KP.Pin 		=  GPIO_PIN_9 | GPIO_PIN_10 | GPIO_PIN_11 |GPIO_PIN_8;
 	GPIO_InitDef_KP.Mode 	= GPIO_MODE_OUTPUT_PP;	// combined the previous Mode(OUT) & OType(PP) (Output Push Pull)
 	GPIO_InitDef_KP.Pull 	= GPIO_PULLUP;
 	GPIO_InitDef_KP.Speed 	= GPIO_SPEED_MEDIUM;
@@ -204,7 +204,7 @@ int check_column(){
 	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_9, GPIO_PIN_RESET);
 	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_RESET);
 	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOD, GPIO_PIN_8, GPIO_PIN_RESET);
 	
 	//read columns
 	if (!HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_11)){ //column 3
@@ -228,7 +228,7 @@ int check_column(){
 int check_row(){
 	
 		//Rows
-		GPIO_InitDef_KP.Pin 		= GPIO_PIN_9 | GPIO_PIN_10 | GPIO_PIN_11 |GPIO_PIN_12;
+		GPIO_InitDef_KP.Pin 		= GPIO_PIN_9 | GPIO_PIN_10 | GPIO_PIN_11 |GPIO_PIN_8;
 		GPIO_InitDef_KP.Mode 	= GPIO_MODE_INPUT; // Input Floating
 		GPIO_InitDef_KP.Pull 	= GPIO_PULLUP;
 		GPIO_InitDef_KP.Speed 	= GPIO_SPEED_MEDIUM;
@@ -257,7 +257,7 @@ int check_row(){
 		if(!HAL_GPIO_ReadPin(GPIOD,GPIO_PIN_11)){
 			return 2;
 		}
-		if(!HAL_GPIO_ReadPin(GPIOD,GPIO_PIN_12)){
+		if(!HAL_GPIO_ReadPin(GPIOD,GPIO_PIN_8)){
 			return 1;
 		}
 		else{

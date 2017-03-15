@@ -12,9 +12,13 @@
 #include "stm32f4xx_hal.h"
 #include "keypad.h"
 #include "tilt_detect.h"
+#include "main.h"
 
 int desiredPitch = 0;
 int desiredRoll = 0;
+
+state_type state = TEMP_MODE;
+
 
 void Thread_Keyboard (void const *argument);                 // thread function
 osThreadId tid_Thread_Keyboard;                              // thread id
@@ -35,13 +39,15 @@ int start_Thread_Keyboard (void) {
  *---------------------------------------------------------------------------*/
 	void Thread_Keyboard (void const *argument) {
 		while(1){
-				osDelay(1000);
+				//osDelay(1000);
 				//HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_12);
 			
 				if(keypad_interpret() == ENTER){
 					//Get out of input mode, go to temp mode
+					state = TEMP_MODE;
 				}
 				else if (keypad_interpret() != STANDBY ){
+						state = KEYPAD;
 						//Interact with keypad to get desired roll angle
 						//need a way to sop pinting temp value on debug
 					
@@ -50,16 +56,18 @@ int start_Thread_Keyboard (void) {
 						printf ("Desired Roll = %d\n", desiredRoll);
 						
 						//That's a way of a few seconds (2-3)
-						osDelay(10000);
+						osDelay(1000);
 						
 						//Interact with keypad to get desired pitch angle
 						printf("Please enter pitch angle on Keypad...\n");
 						desiredPitch = keypad_input();
 						printf ("Desired Pitch = %d\n", desiredPitch);
 					
+						state = TEMP_MODE;
 				}
 				else{
-					//nothing is pressed, just wait in temp mode.
+					//nothing is pressed, just wait in current state
+					
 				}
 			
 				

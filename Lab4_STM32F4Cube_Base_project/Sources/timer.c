@@ -105,23 +105,7 @@ void LEDs_Init(void){
 void setRollDC(int value){
 	sConfigOC.Pulse = value;
 
-  HAL_TIM_PWM_ConfigChannel(&tim4_handle, &sConfigOC, TIM_CHANNEL_2);
-
-  HAL_TIM_PWM_ConfigChannel(&tim4_handle, &sConfigOC, TIM_CHANNEL_4);
-
-  HAL_TIM_MspPostInit(&tim4_handle);
-	
-	HAL_TIM_Base_Start(&tim4_handle);
-	
-	HAL_TIM_PWM_Start(&tim4_handle,TIM_CHANNEL_2); 
-	HAL_TIM_PWM_Start(&tim4_handle,TIM_CHANNEL_4); 
-
-}
-
-void setPitchDC(int value){
-	sConfigOC.Pulse = value;
-	
-	HAL_TIM_PWM_ConfigChannel(&tim4_handle, &sConfigOC, TIM_CHANNEL_1);
+  HAL_TIM_PWM_ConfigChannel(&tim4_handle, &sConfigOC, TIM_CHANNEL_1);
 
   HAL_TIM_PWM_ConfigChannel(&tim4_handle, &sConfigOC, TIM_CHANNEL_3);
 
@@ -131,4 +115,20 @@ void setPitchDC(int value){
 	
 	HAL_TIM_PWM_Start(&tim4_handle,TIM_CHANNEL_1); 
 	HAL_TIM_PWM_Start(&tim4_handle,TIM_CHANNEL_3); 
+
+}
+
+void setPitchDC(int value){
+	sConfigOC.Pulse = value;
+	
+	HAL_TIM_PWM_ConfigChannel(&tim4_handle, &sConfigOC, TIM_CHANNEL_2);
+
+  HAL_TIM_PWM_ConfigChannel(&tim4_handle, &sConfigOC, TIM_CHANNEL_4);
+
+  HAL_TIM_MspPostInit(&tim4_handle);
+	
+	HAL_TIM_Base_Start(&tim4_handle);
+	
+	HAL_TIM_PWM_Start(&tim4_handle,TIM_CHANNEL_2); 
+	HAL_TIM_PWM_Start(&tim4_handle,TIM_CHANNEL_4); 
 }

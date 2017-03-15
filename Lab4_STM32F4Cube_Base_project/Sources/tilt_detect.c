@@ -52,6 +52,10 @@ void Thread_Accelerometer (void const *argument){
 	
 	osEvent Status_Accelerometer;
 	// Update accelerometer values when signaled to do so, clear said signal after execution
+	
+	LEDs_Init();
+	Timer_Init();
+	
 	while(1){
 		
 		Status_Accelerometer = osSignalWait((int32_t) THREAD_EXECUTE, (uint32_t) THREAD_TIMEOUT);
@@ -101,8 +105,10 @@ void accelerometer_mode(void) {
 				pitches[i+1] = pitches[i];
 			}
 			//printf("Roll: %f, pitch: %f, no filt roll: %f, no filt pitch: %f\n", roll, pitch, rolls[0], pitches[0]); //display both filtered and unfiltered data
-			
-			printf("Roll: %f, pitch: %f\n", rolls[0], pitches[0]);
+
+			if(state == ACCEL_MODE){
+				printf("Roll: %f, pitch: %f\n", rolls[0], pitches[0]);
+			}
 	}
 	
 	// Calculate tilt angles when permission to resources granted

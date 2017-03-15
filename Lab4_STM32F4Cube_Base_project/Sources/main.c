@@ -34,6 +34,8 @@
 const int length = 20;
 const int order = 5;
 
+//state_type state = TEMP_MODE;
+
 
 //ADC_HandleTypeDef ADC1_Handle;
 
@@ -126,8 +128,8 @@ int main (void) {
 	CLKStart();
 	
 	/*Cnfigure ADC instance*/
-	//ConfigADC();
-	//start_Thread_TempSensor();
+	ConfigADC();
+	start_Thread_TempSensor();
 	
 	init_accelerometer();
 	start_Thread_Accelerometer();
@@ -138,6 +140,8 @@ int main (void) {
 	
 	LED_length = 300;
 	temperature_c = 0;
+	
+	start_Thread_Keyboard();
 	
 	
   osKernelStart();                          /* start thread execution         */

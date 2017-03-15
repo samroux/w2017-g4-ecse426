@@ -79,7 +79,7 @@ GPIOE:
 */
 
 
-
+// 7-segment display
 void MX_GPIO_Init(){
 	GPIO_InitDef_MX.Pin 		= GPIO_PIN_4 | GPIO_PIN_5 |GPIO_PIN_6 |GPIO_PIN_7 |GPIO_PIN_8 |GPIO_PIN_9 |GPIO_PIN_10|GPIO_PIN_11|GPIO_PIN_12| GPIO_PIN_13|GPIO_PIN_14 | GPIO_PIN_15;
 	GPIO_InitDef_MX.Mode 	= GPIO_MODE_OUTPUT_PP; // combined the previous Mode(OUT) & OType(PP)
@@ -265,6 +265,12 @@ void oneDigitDisplay(int num, uint16_t digit){ // E4-E10(A-G); E11(DP); E12(x100
 	}
 }
 
+
+
+void reset_7_segment(){
+	
+	
+}
 
 /**
   * @}

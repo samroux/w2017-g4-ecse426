@@ -46,8 +46,10 @@
 
 #define THREAD_WAIT 0  	 // Signal for thread to wait
 #define THREAD_EXECUTE 2   // Signal for thread to execute
-#define THREAD_TIMEOUT 50    // Thread timeout value in milliseconds
-#define THREAD_DELAY 20
+#define THREAD_TIMEOUT 100    // Thread timeout value in milliseconds
+#define THREAD_DELAY 5
+
+#define OVERHEAT 33.0f
 
 /* Exported types ------------------------------------------------------------*/
 extern int accel_ready;
@@ -65,6 +67,11 @@ extern TIM_HandleTypeDef handle_tim4;
 extern TIM_ClockConfigTypeDef ClockConfig;
 extern TIM_MasterConfigTypeDef sMasterConfig;
 extern TIM_OC_InitTypeDef sConfigOC;
+
+
+typedef enum  {TEMP_MODE, ACCEL_MODE, KEYPAD} state_type;
+extern state_type state;
+
 
 // Mutexes
 extern osMutexId temperatureMutex;
