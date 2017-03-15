@@ -23,13 +23,13 @@
 
 #define OVERHEAT 33.0f
 
-float accelerometer_data[3];
-float rolls[5];
-float pitches[5];
-int accel_ready;
+//float accelerometer_data[3];
+//float rolls[5];
+//float pitches[5];
+//int accel_ready;
 
-int desiredPitch = 0;
-int desiredRoll = 0;
+//int desiredPitch = 0;
+//int desiredRoll = 0;
 
 const int length = 20;
 const int order = 5;
@@ -57,11 +57,9 @@ uint32_t HAL_GetTick(void) {
 #endif
 
 
-
-float b[5] = {0.1, 0.15, 0.5, 0.15, 0.1};
-
-
 float filterResult(float* p) {//FIR filter for noise reduction 
+	float b[5] = {0.1, 0.15, 0.5, 0.15, 0.1};
+	
 	float res = 0;
 	int i = 0;
 	
@@ -70,19 +68,6 @@ float filterResult(float* p) {//FIR filter for noise reduction
 	}
 	return res;
 }
-
-//Input capture callback
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
-	
-	//Prevent Compilation warning
-  __IO uint32_t tmpreg = 0x00;
-  UNUSED(tmpreg); 
-	
-	// If callback is associated with the given pin, then read the data
-	if(GPIO_Pin == GPIO_PIN_0) {
-		LIS3DSH_ReadACC(accelerometer_data);
-	}	
-}	
 
 /**
   * System Clock Configuration
@@ -141,8 +126,8 @@ int main (void) {
 	CLKStart();
 	
 	/*Cnfigure ADC instance*/
-	ConfigADC();
-	start_Thread_TempSensor();
+	//ConfigADC();
+	//start_Thread_TempSensor();
 	
 	init_accelerometer();
 	start_Thread_Accelerometer();
@@ -154,32 +139,6 @@ int main (void) {
 	LED_length = 300;
 	temperature_c = 0;
 	
-	//Interact with keypad to get desired roll angle
-	printf("Please enter roll angle on Keypad...\n");
-	desiredRoll = keypad_input();
-	printf ("Desired Roll = %d\n", desiredRoll);
-	
-	j =0;
-	
-	//That's a way of a few seconds (2-3)
-	while (j < 10000000){
-		j+=1;
-	}
-	
-	//Interact with keypad to get desired pitch angle
-	printf("Please enter pitch angle on Keypad...\n");
-	desiredPitch = keypad_input();
-	printf ("Desired Pitch = %d\n", desiredPitch);
-	
-
-	/* User codes goes here*/
-  initializeLED_IO();                       /* Initialize LED GPIO Buttons    */
-  start_Thread_LED();                       /* Create LED thread              */
-	/* User codes ends here*/
-	
-//	while(1){
-//		temperature_c = doTempStuff();
-//	}
 	
   osKernelStart();                          /* start thread execution         */
 }
