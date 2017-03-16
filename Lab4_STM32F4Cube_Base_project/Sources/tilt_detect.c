@@ -79,17 +79,11 @@ void accelerometer_mode(void) {
 			
 			update_accel(accelerometer_data[0], accelerometer_data[1], accelerometer_data[2]);
 			
-			//Uncomment to see uncalibrated version
-			//update_accel2(accelerometer_data[0], accelerometer_data[1], accelerometer_data[2]);
-			
 			rolls[0] = calc_roll();
 			pitches[0] = calc_pitch();
 			
 			roll = filterResult(&rolls[0]);
 			pitch = filterResult(&pitches[0]);
-			
-			//controlRollLED(desiredRoll, roll);
-			//controlPitchLED(desiredPitch, pitch);
 			
 			roll_uf = rolls[0];
 			pitch_uf = pitches[0];
@@ -106,7 +100,7 @@ void accelerometer_mode(void) {
 			}
 			//printf("Roll: %f, pitch: %f, no filt roll: %f, no filt pitch: %f\n", roll, pitch, rolls[0], pitches[0]); //display both filtered and unfiltered data
 
-			if(state == ACCEL_MODE){
+			if(state == TEMP_MODE){
 				printf("Roll: %f, pitch: %f\n", rolls[0], pitches[0]);
 			}
 	}
@@ -174,7 +168,6 @@ void update_accel(float Ax, float Ay, float Az){
 
 float calc_pitch(void){
 	return 90.0 - conv_to_deg(atan(axes.y/sqrt((axes.x*axes.x)+(axes.z*axes.z))));
-
 }
 
 float calc_roll(void){

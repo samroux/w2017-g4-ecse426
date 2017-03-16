@@ -7,7 +7,6 @@ void alarmRotate(int ledSpeedCounter);
 void reset_7_segments(void);
 
 int counter = 0;
-int counter_2 = 0;
 float display_temp;
 
 osThreadId temp_thread; 
@@ -44,20 +43,13 @@ void Thread_TempSensor (void const *argument){
 		
 		ledSpeedCounter++;
 		if (temperature_c > OVERHEAT){
-			printf("OVERHEAT");
-			alarmRotate(ledSpeedCounter);
-			counter_2++;
-				if(counter_2 >= 30) {
-					counter_2 = 0;
+			//printf("OVERHEAT");
+			counter++;
+				if(counter >= 20) {
+					counter = 0;
 					reset_7_segments();
-					osDelay(200);					
+					osDelay(100);					
 				}	
-		}
-		else{//Turn off LEDs when temperature goes below threshold
-			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_RESET); 
-			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, GPIO_PIN_RESET); 
-			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, GPIO_PIN_RESET); 
-			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_15, GPIO_PIN_RESET);		
 		}
 
 	}                                                       
@@ -78,7 +70,7 @@ float doTempStuff( ){
 	temperature_c = ConvertTemp(ADCValue);
 	
 	if(state == TEMP_MODE){
-			printf("Temperature_c: %.6f\n",temperature_c);
+			//printf("Temperature_c: %.6f\n",temperature_c);
 	}
 	
 	osMutexRelease(temperatureMutex);
@@ -186,7 +178,6 @@ Starting all necessary clocks
 	
 	ten = tCal % 10;
 	
-	//HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()/1000); // increase frequency for better rendering
 	
 	oneDigitDisplay (ten, TEN); //digit at position 10^1
 	//osDelay(delay);  //delay here is to make sure we see digit long enough
@@ -197,7 +188,7 @@ Starting all necessary clocks
 	osSignalWait(0x0004, THREAD_DELAY);
 	
 	oneDigitDisplay (dec, DEC); //digit at position 10^-1
-	//osDelay(delay);
+	//osDelay(100);
 	osSignalWait(0x0004, THREAD_DELAY);
 	
 	if(mode == 0){ //Celsius
@@ -206,42 +197,9 @@ Starting all necessary clocks
 	else{ // farheneith
 		oneDigitDisplay (101, DEG);
 	}
-	//osDelay(delay);
-	
-	osSignalWait(0x0004, THREAD_DELAY);
-	
-	//HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()/100); // restore frequency
+	//osDelay(1);
 
 }
-
-
-void alarmRotate(int ledSpeedCounter) {//Triggers 4 LEDs to rotate when temperature reaches threshold
-		
-	int counter = ledSpeedCounter % 200;
-	
-	//Toggles the LEDS in a circle pattern
-	if(counter < 50 ){
-		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_15, GPIO_PIN_RESET);
-		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_SET); 
-	}
-	
-	else if(counter < 100){
-		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_RESET); 
-		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, GPIO_PIN_SET); 
-	}
-	
-	else if(counter < 150){
-		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, GPIO_PIN_RESET); 
-		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, GPIO_PIN_SET); 
-	}
-	
-	else if(counter < 200){
-		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, GPIO_PIN_RESET); 
-		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_15, GPIO_PIN_SET); 
-	}
-}	
-
-
 
 void reset_7_segments (){
 			HAL_GPIO_WritePin(GPIOE, GPIO_PIN_4, GPIO_PIN_RESET);

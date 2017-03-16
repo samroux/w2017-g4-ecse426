@@ -177,3 +177,4 @@ void EXTI0_IRQHandler(void){
 	accel_ready = 1;
 
 }
+

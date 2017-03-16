@@ -49,7 +49,7 @@ int start_Thread_Keyboard (void) {
 				else if (keypad_interpret() != STANDBY ){
 						state = KEYPAD;
 						//Interact with keypad to get desired roll angle
-						//need a way to sop pinting temp value on debug
+						//need a way to stop pinting temp value on debug
 					
 						printf("Please enter roll angle on Keypad...\n");
 						desiredRoll = keypad_input();

@@ -44,10 +44,9 @@
 #include "lis3dsh.h"
 #include "cmsis_os.h"
 
-#define THREAD_WAIT 0  	 // Signal for thread to wait
+#define THREAD_DELAY 10 	 // Signal for thread to wait
 #define THREAD_EXECUTE 2   // Signal for thread to execute
 #define THREAD_TIMEOUT 100    // Thread timeout value in milliseconds
-#define THREAD_DELAY 5
 
 #define OVERHEAT 33.0f
 
